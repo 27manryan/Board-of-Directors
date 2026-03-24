@@ -506,7 +506,17 @@ const SIGNALS = [
 
 let mode = "auto";
 let selected = new Set();
-let apiKey = localStorage.getItem("board_api_key") || "";
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : "";
+}
+function setCookie(name, value) {
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 5);
+  document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + expires.toUTCString() + ";path=/;SameSite=Strict";
+}
+
+let apiKey = localStorage.getItem("board_api_key") || sessionStorage.getItem("board_api_key") || getCookie("board_api_key") || "";
 
 function init() {
   if (apiKey) {
@@ -523,6 +533,8 @@ function saveKey() {
   if (!val.startsWith("sk-")) { alert("That doesn't look like a valid Anthropic API key."); return; }
   apiKey = val;
   localStorage.setItem("board_api_key", apiKey);
+  sessionStorage.setItem("board_api_key", apiKey);
+  setCookie("board_api_key", apiKey);
   showBoardScreen();
 }
 
