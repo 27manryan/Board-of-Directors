@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Board">
+<title>Board of Directors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1520;
+    --navy-mid: #1B2A4A;
+    --navy-light: #243452;
+    --gold: #B8972E;
+    --gold-light: #D4AF52;
+    --slate: #6B7FA3;
+    --cream: #F5F0E8;
+    --cream-dim: #C8BFA8;
+    --border: rgba(184,151,46,0.2);
+    --border-bright: rgba(184,151,46,0.45);
+    --text-primary: #F5F0E8;
+    --text-secondary: #C8BFA8;
+    --text-muted: #6B7FA3;
+    --surface: rgba(27,42,74,0.5);
+    --surface-bright: rgba(27,42,74,0.8);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%;
+    background: var(--navy);
+    color: var(--text-primary);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background: var(--navy);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,151,46,0.08) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(184,151,46,0.03) 39px, rgba(184,151,46,0.03) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(184,151,46,0.03) 39px, rgba(184,151,46,0.03) 40px);
+  }
+
+  #app {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px 80px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 0 28px;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+
+  .header p {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* API KEY SCREEN */
+  #key-screen {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .key-card {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    background: var(--surface);
+    backdrop-filter: blur(8px);
+  }
+
+  .key-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .key-card p {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .key-input-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  input[type="password"], input[type="text"], textarea {
+    background: rgba(13,21,32,0.8);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input[type="password"]:focus, input[type="text"]:focus, textarea:focus {
+    border-color: var(--border-bright);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  button {
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 10px 18px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-gold:active { transform: scale(0.97); }
+  .btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 0.5px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 7px 14px;
+    border-radius: 8px;
+  }
+
+  .btn-ghost:hover { border-color: var(--border-bright); color: var(--text-primary); }
+
+  /* MAIN BOARD UI */
+  #board-screen { display: none; animation: fadeUp 0.5s ease both; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  /* MODE TABS */
+  .mode-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .mode-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 0.5px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mode-tab.active {
+    background: rgba(184,151,46,0.12);
+    border-color: var(--border-bright);
+    color: var(--gold-light);
+  }
+
+  /* MEMBER GRID */
+  .member-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    cursor: default;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .chip.clickable { cursor: pointer; }
+  .chip.clickable:hover { border-color: var(--border-bright); background: var(--surface-bright); }
+  .chip.selected { border-color: var(--gold); background: rgba(184,151,46,0.1); }
+  .chip.active-indicator { border-color: var(--gold-light); background: rgba(184,151,46,0.15); }
+
+  .chip-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border-bright);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .chip.selected .chip-dot, .chip.active-indicator .chip-dot { background: var(--gold); }
+
+  .chip-text { min-width: 0; }
+  .chip-name { font-size: 11px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip-role { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* QUESTION INPUT */
+  .question-area { margin-bottom: 16px; }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+    font-size: 13px;
+  }
+
+  .convene-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .convene-hint { font-size: 10px; color: var(--text-muted); }
+
+  .btn-convene {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 10px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-convene:hover { background: var(--gold-light); }
+  .btn-convene:active { transform: scale(0.97); }
+  .btn-convene:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* DIVIDER */
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* RESPONSE CARDS */
+  #responses { margin-top: 4px; }
+
+  .rcard {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .rcard-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(13,21,32,0.4);
+  }
+
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500; flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .rcard-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .rcard-role { font-size: 10px; color: var(--text-muted); margin-left: auto; text-align: right; max-width: 140px; }
+
+  .rcard-body {
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .synth-card {
+    border: 0.5px solid var(--border-bright);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    background: rgba(184,151,46,0.06);
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .synth-head {
+    padding: 10px 14px;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(184,151,46,0.08);
+  }
+
+  .synth-body {
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* STREAMING CURSOR */
+  .streaming-cursor::after {
+    content: '▋';
+    color: var(--gold);
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* PULSE LOADER */
+  .pulse { display: inline-flex; gap: 4px; align-items: center; padding: 4px 0; }
+  .pulse span {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--gold);
+    animation: pb 1.2s ease-in-out infinite;
+    opacity: 0.4;
+  }
+  .pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .pulse span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pb { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+
+  /* SETTINGS */
+  .settings-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* SAFE AREA */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    #app { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="header">
+    <div class="header-eyebrow">Strategic Advisory System</div>
+    <h1>Board of Directors</h1>
+    <p>12 specialized advisors — convene on any decision</p>
+  </div>
+
+  <!-- API KEY SCREEN -->
+  <div id="key-screen">
+    <div class="key-card">
+      <h2>API Key Required</h2>
+      <p>Enter your Anthropic API key to activate the board. It's stored only on this device and never transmitted anywhere except directly to Anthropic's API.</p>
+      <div class="key-input-row">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+        <button class="btn-gold" onclick="saveKey()">Activate</button>
+      </div>
+      <p style="margin-top:12px;font-size:10px;color:var(--text-muted);">Get your key at console.anthropic.com</p>
+    </div>
+  </div>
+
+  <!-- BOARD SCREEN -->
+  <div id="board-screen">
+
+    <div class="settings-bar">
+      <button class="btn-ghost" onclick="showKeyScreen()">⚙ API Key</button>
+    </div>
+
+    <div class="section-label">Mode</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-auto" onclick="setMode('auto')">Auto-route</button>
+      <button class="mode-tab" id="tab-manual" onclick="setMode('manual')">Manual</button>
+      <button class="mode-tab" id="tab-full" onclick="setMode('full')">Full board</button>
+    </div>
+
+    <div class="section-label">The Board</div>
+    <div class="member-grid" id="member-grid"></div>
+
+    <div class="question-area">
+      <div class="section-label">Your Decision</div>
+      <textarea id="question" placeholder="Describe the decision, challenge, or situation you need the board to weigh in on..."></textarea>
+      <div class="convene-row">
+        <span class="convene-hint" id="convene-hint"></span>
+        <button class="btn-convene" id="convene-btn" onclick="convene()">Convene Board</button>
+      </div>
+    </div>
+
+    <div class="divider" id="responses-divider" style="display:none;"></div>
+    <div id="responses"></div>
+
+  </div>
+</div>
+
+<script>
+const BOARD = [
+  { id:"buffett", name:"Warren Buffett", initials:"WB", role:"Long-game & consequences", bg:"#1C3828", color:"#6DBF8A",
+    prompt:`You are Warren Buffett. Respond with long-term value investing philosophy. Focus on: second-order consequences, patience vs urgency, whether this decision compounds positively over 10 years, risks that look small now but are large, what a rational long-term owner would do. Be concise, direct, occasionally folksy. 3-5 sentences.` },
+  { id:"jobs", name:"Steve Jobs", initials:"SJ", role:"Prioritization & product truth", bg:"#1B2440", color:"#7B9FD4",
+    prompt:`You are Steve Jobs. Apply ruthless prioritization. Focus on: what should be cut entirely, whether this is insanely great or merely adequate, what the user actually experiences, what compromise is being made that shouldn't be, what saying yes means saying no to. Be blunt. Challenge the premise if warranted. 3-5 sentences.` },
+  { id:"thiel", name:"Peter Thiel", initials:"PT", role:"Contrarian & premise detector", bg:"#3B1C1C", color:"#D47B7B",
+    prompt:`You are Peter Thiel. Challenge the premise entirely before engaging. Ask: what if the conventional assumption is wrong, what monopoly position does this create or destroy, is this zero-to-one or commodity, what is everyone doing and why the opposite might be right. Be provocative and specific. 3-5 sentences.` },
+  { id:"obama", name:"Barack Obama", initials:"BO", role:"Stakeholders & communication", bg:"#0D2440", color:"#6BA8D4",
+    prompt:`You are Barack Obama. Analyze: who are all stakeholders and what do they need to hear, how to communicate to bring people along, coalition-building strategy, unintended relational consequences, how this looks from those with least power. Measured, thoughtful, precise. 3-5 sentences.` },
+  { id:"taleb", name:"Nassim Taleb", initials:"NT", role:"Fragility & system risk", bg:"#2E2510", color:"#C9A84C",
+    prompt:`You are Nassim Taleb. Respond through fragility and tail risk. Focus on: hidden downside that looks improbable, is this fragile or antifragile, worst-case outcome and survivability, what optionality is being surrendered, where is the person fooled by randomness. Be blunt and combative. 3-5 sentences.` },
+  { id:"duke", name:"Annie Duke", initials:"AD", role:"Decision quality & uncertainty", bg:"#142440", color:"#6B98C9",
+    prompt:`You are Annie Duke, decision scientist. Analyze: is this judged on process or outcome, actual probabilities assigned to scenarios, where is resulting happening, what information is weighted incorrectly, how to structure this decision for clear hindsight evaluation. Precise, analytical, probabilistic. 3-5 sentences.` },
+  { id:"grant", name:"Adam Grant", initials:"AG", role:"Cognitive process & org behavior", bg:"#142818", color:"#6BC98A",
+    prompt:`You are Adam Grant, organizational psychologist. Focus on: what cognitive bias is embedded in how the question is framed, what research says about decisions like this, where is the person thinking like a preacher rather than a scientist, what interpersonal dynamics are underweighted. Grounded in research, direct. 3-5 sentences.` },
+  { id:"gladwell", name:"Malcolm Gladwell", initials:"MG", role:"Narrative & pattern reframing", bg:"#261840", color:"#A87BD4",
+    prompt:`You are Malcolm Gladwell. Reframe the problem by finding the non-obvious angle — the counterintuitive insight, hidden pattern, case study that inverts conventional wisdom. Find a real-world analogy or historical parallel that recontextualizes this decision. Make the person see it differently. Storytelling-first. 3-5 sentences.` },
+  { id:"sowell", name:"Thomas Sowell", initials:"TS", role:"Economic tradeoffs & incentives", bg:"#1E150A", color:"#C9936B",
+    prompt:`You are Thomas Sowell. Apply rigorous economic thinking: incentive structures at play, tradeoffs with no third option, what "and then what?" reveals, who bears costs not being counted, gap between intentions and consequences. Direct, spare, unsparing of fuzzy thinking. 3-5 sentences.` },
+  { id:"sotomayor", name:"Sonia Sotomayor", initials:"SS", role:"Legal framing & harm detection", bg:"#160D2E", color:"#9B7BD4",
+    prompt:`You are Justice Sonia Sotomayor. Examine: legal or ethical exposure not being named, who is harmed with no voice in the room, structural implications this creates, where the letter of the plan conflicts with its spirit, what this looks like under rigorous ethical scrutiny. Precise, principled, grounded in lived reality. 3-5 sentences.` },
+  { id:"ogilvy", name:"David Ogilvy", initials:"DO", role:"Customer psychology & positioning", bg:"#251208", color:"#D4916B",
+    prompt:`You are David Ogilvy. Respond through customer psychology and positioning: what does the customer actually want vs what they say, is this message built for seller's ego or buyer's decision-making, what single promise would cut through the noise, is this positioned to be remembered or merely to exist. Direct, confident, specific. 3-5 sentences.` },
+  { id:"willink", name:"Jocko Willink", initials:"JW", role:"Operational reality & next action", bg:"#0D1A0D", color:"#6BC96B",
+    prompt:`You are Jocko Willink. Cut through theory entirely. State: the single next executable action, who owns it and by when, where planning is substituting for execution, the actual obstacle not the perceived one, whether this is a leadership or discipline problem. Blunt, direct, zero tolerance for complexity theater. 3-5 sentences.` }
+];
+
+const SIGNALS = [
+  { terms:["invest","money","capital","revenue","profit","price","cost","financial","valuation","income"], ids:["buffett","sowell","duke"] },
+  { terms:["product","feature","build","design","app","launch","ship","ux","user","software"], ids:["jobs","ogilvy","thiel"] },
+  { terms:["hire","team","culture","people","partner","employee","relationship","co-founder"], ids:["grant","obama","willink"] },
+  { terms:["market","brand","position","message","audience","customer","marketing","copy","narrative"], ids:["ogilvy","gladwell","jobs"] },
+  { terms:["risk","downside","fail","worst","fragile","survive","scenario","stress","danger"], ids:["taleb","duke","sotomayor"] },
+  { terms:["legal","contract","ethical","harm","right","wrong","fair","equity","liability"], ids:["sotomayor","grant","obama"] },
+  { terms:["strategy","compete","win","differentiate","moat","advantage","competition"], ids:["thiel","buffett","sowell"] },
+  { terms:["communicate","announce","pitch","persuade","convince","present","tell","explain"], ids:["obama","ogilvy","gladwell"] },
+  { terms:["next step","action","execute","implement","prioritize","focus","deadline","now","do","move"], ids:["willink","jobs","duke"] },
+  { terms:["why","bias","think","decide","frame","approach","reasoning","process","cognitive"], ids:["grant","gladwell","taleb"] },
+  { terms:["family","personal","balance","health","schedule","time","life","kids","spouse","home"], ids:["grant","sotomayor","obama"] },
+  { terms:["client","consulting","service","deliverable","scope","project","proposal"], ids:["ogilvy","willink","buffett"] },
+  { terms:["military","service","deploy","enlist","army","navy","air force","veteran","guard"], ids:["willink","obama","sotomayor"] },
+  { terms:["school","degree","education","graduate","class","study","university"], ids:["grant","duke","buffett"] }
+];
+
+let mode = "auto";
+let selected = new Set();
+let apiKey = localStorage.getItem("board_api_key") || "";
+
+function init() {
+  if (apiKey) {
+    showBoardScreen();
+  } else {
+    document.getElementById("key-screen").style.display = "block";
+    document.getElementById("board-screen").style.display = "none";
+  }
+  buildGrid();
+}
+
+function saveKey() {
+  const val = document.getElementById("api-key-input").value.trim();
+  if (!val.startsWith("sk-")) { alert("That doesn't look like a valid Anthropic API key."); return; }
+  apiKey = val;
+  localStorage.setItem("board_api_key", apiKey);
+  showBoardScreen();
+}
+
+function showBoardScreen() {
+  document.getElementById("key-screen").style.display = "none";
+  document.getElementById("board-screen").style.display = "block";
+}
+
+function showKeyScreen() {
+  document.getElementById("api-key-input").value = apiKey;
+  document.getElementById("board-screen").style.display = "none";
+  document.getElementById("key-screen").style.display = "block";
+}
+
+function buildGrid() {
+  const grid = document.getElementById("member-grid");
+  grid.innerHTML = "";
+  BOARD.forEach(m => {
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.id = "chip-" + m.id;
+    chip.innerHTML = `<div class="chip-dot" id="dot-${m.id}"></div><div class="chip-text"><div class="chip-name">${m.name}</div><div class="chip-role">${m.role}</div></div>`;
+    chip.onclick = () => { if (mode === "manual") toggleChip(m.id); };
+    grid.appendChild(chip);
+  });
+}
+
+function toggleChip(id) {
+  if (selected.has(id)) {
+    selected.delete(id);
+    document.getElementById("chip-" + id).classList.remove("selected");
+  } else {
+    selected.add(id);
+    document.getElementById("chip-" + id).classList.add("selected");
+  }
+}
+
+function setMode(m) {
+  mode = m;
+  ["auto","manual","full"].forEach(t => document.getElementById("tab-" + t).classList.remove("active"));
+  document.getElementById("tab-" + m).classList.add("active");
+  selected.clear();
+  document.querySelectorAll(".chip").forEach(c => { c.classList.remove("selected","clickable"); });
+  if (mode === "manual") {
+    document.querySelectorAll(".chip").forEach(c => c.classList.add("clickable"));
+    document.getElementById("convene-hint").textContent = "tap members to select";
+  } else {
+    document.getElementById("convene-hint").textContent = "";
+  }
+}
+
+function autoRoute(q) {
+  const ql = q.toLowerCase();
+  const scores = {};
+  BOARD.forEach(m => scores[m.id] = 0);
+  SIGNALS.forEach(sig => sig.terms.forEach(t => { if (ql.includes(t)) sig.ids.forEach(id => scores[id]++); }));
+  let sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]).filter(s => s[1] > 0).slice(0, 4).map(s => s[0]);
+  if (sorted.length < 3) {
+    ["buffett","willink","sotomayor","grant"].forEach(d => { if (!sorted.includes(d)) sorted.push(d); });
+    sorted = sorted.slice(0, 4);
+  }
+  return sorted;
+}
+
+async function convene() {
+  const q = document.getElementById("question").value.trim();
+  if (!q) return;
+
+  let ids = [];
+  if (mode === "full") ids = BOARD.map(m => m.id);
+  else if (mode === "manual") {
+    ids = [...selected];
+    if (!ids.length) { document.getElementById("convene-hint").textContent = "select at least one member"; return; }
+  } else {
+    ids = autoRoute(q);
+  }
+
+  const members = BOARD.filter(m => ids.includes(m.id));
+
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active-indicator"));
+  ids.forEach(id => { const c = document.getElementById("chip-" + id); if(c) c.classList.add("active-indicator"); });
+
+  const btn = document.getElementById("convene-btn");
+  btn.disabled = true;
+  btn.textContent = "Convening...";
+
+  const responsesEl = document.getElementById("responses");
+  responsesEl.innerHTML = "";
+  document.getElementById("responses-divider").style.display = "block";
+
+  // Create synthesis card first (will fill last)
+  const synthCard = document.createElement("div");
+  synthCard.className = "synth-card";
+  synthCard.innerHTML = `<div class="synth-head">Board Synthesis</div><div class="synth-body" id="synth-body"><div class="pulse"><span></span><span></span><span></span></div></div>`;
+  responsesEl.appendChild(synthCard);
+
+  // Create member cards
+  members.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "rcard";
+    card.id = "rcard-" + m.id;
+    card.innerHTML = `
+      <div class="rcard-head">
+        <div class="avatar" style="background:${m.bg};color:${m.color}">${m.initials}</div>
+        <div>
+          <div class="rcard-name">${m.name}</div>
+        </div>
+        <div class="rcard-role">${m.role}</div>
+      </div>
+      <div class="rcard-body" id="rbody-${m.id}"><div class="pulse"><span></span><span></span><span></span></div></div>`;
+    responsesEl.appendChild(card);
+  });
+
+  responsesEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // Fire all member calls in parallel
+  const memberPromises = members.map(m => fetchResponse(m, q));
+  const memberResults = await Promise.all(memberPromises);
+
+  // Synthesis
+  await fetchSynthesis(members, memberResults, q);
+
+  btn.disabled = false;
+  btn.textContent = "Convene Board";
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active-indicator"));
+}
+
+async function fetchResponse(member, question) {
+  const bodyEl = document.getElementById("rbody-" + member.id);
+  bodyEl.innerHTML = "";
+  bodyEl.classList.add("streaming-cursor");
+
+  let text = "";
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 400,
+        stream: true,
+        system: member.prompt,
+        messages: [{ role: "user", content: `Decision: ${question}` }]
+      })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split("\n").filter(l => l.startsWith("data: "));
+      for (const line of lines) {
+        const data = line.slice(6);
+        if (data === "[DONE]") break;
+        try {
+          const json = JSON.parse(data);
+          if (json.type === "content_block_delta" && json.delta?.text) {
+            text += json.delta.text;
+            bodyEl.textContent = text;
+          }
+        } catch(e) {}
+      }
+    }
+  } catch(e) {
+    text = "Error reaching API. Check your API key.";
+    bodyEl.textContent = text;
+    bodyEl.style.color = "#D47B7B";
+  }
+
+  bodyEl.classList.remove("streaming-cursor");
+  return text;
+}
+
+async function fetchSynthesis(members, responses, question) {
+  const synthEl = document.getElementById("synth-body");
+  synthEl.innerHTML = "";
+  synthEl.classList.add("streaming-cursor");
+
+  const responseBlock = members.map((m, i) => `${m.name} (${m.role}): ${responses[i]}`).join("\n\n");
+
+  let text = "";
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 400,
+        stream: true,
+        system: `You are a sharp chief of staff synthesizing board input. Given multiple advisor perspectives, identify: the dominant recommendation, the key tension or disagreement worth noting, and the single most important thing the decision-maker should act on first. Be concise and direct. 4-6 sentences. No bullet points.`,
+        messages: [{ role: "user", content: `Question: ${question}\n\nBoard responses:\n\n${responseBlock}` }]
+      })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split("\n").filter(l => l.startsWith("data: "));
+      for (const line of lines) {
+        const data = line.slice(6);
+        if (data === "[DONE]") break;
+        try {
+          const json = JSON.parse(data);
+          if (json.type === "content_block_delta" && json.delta?.text) {
+            text += json.delta.text;
+            synthEl.textContent = text;
+          }
+        } catch(e) {}
+      }
+    }
+  } catch(e) {
+    synthEl.textContent = "Error synthesizing responses.";
+    synthEl.style.color = "#D47B7B";
+  }
+
+  synthEl.classList.remove("streaming-cursor");
+}
+
+init();
+</script>
+</body>
+</html>
