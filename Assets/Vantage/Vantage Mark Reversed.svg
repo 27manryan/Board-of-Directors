@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Vantage Strategic Communications — Mark · Reversed (for Navy / Dark Backgrounds) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321 321">
+  <defs>
+    <style>
+      .cls-1 { fill: none; }
+      .cls-2 { fill: #B8972E; }
+      .cls-3 { fill: #1B2A4A; }
+      .cls-4 { fill: #6B7FA3; }
+    </style>
+  </defs>
+  <polygon class="cls-1" points="244.01 75.57 304.77 66.06 244.01 75.57 244.01 75.57"/>
+  <polygon class="cls-2" points="108.95 57.42 49.41 57.74 34.05 66.03 97.04 66.03 108.95 57.42"/>
+  <polygon class="cls-2" points="304.77 66.06 224.57 66.03 179.41 75.99 244.01 75.57 304.77 66.06"/>
+  <polygon class="cls-3" style="fill:#FFFFFF;" points="244.01 75.57 190.03 251.46 206.32 247.96 254.26 88.67 304.51 77.46 304.77 66.06 244.01 75.57"/>
+  <polygon class="cls-3" style="fill:#FFFFFF;" points="97.13 66.03 137.94 208.28 145.23 185.04 108.95 57.42 97.04 66.03 97.13 66.03"/>
+  <path class="cls-4" d="M244.01,75.57l-64.59.42-34.18,109.05-7.29,23.24-40.82-142.26h-63.15l36.29,118.71c5.19-2.94,11.18-4.63,17.56-4.63,19.7,0,35.68,15.97,35.68,35.68s-14.48,34.13-32.88,35.56l.02.08,99.35.04h.03s53.97-175.9,53.97-175.9h0Z"/>
+  <path class="cls-3" style="fill:#FFFFFF;" d="M52.15,215.79c0,19.7,15.97,35.68,35.68,35.68.94,0,1.88-.05,2.8-.12l-20.37-66.61c-10.81,6.13-18.12,17.73-18.12,31.05Z"/>
+</svg>

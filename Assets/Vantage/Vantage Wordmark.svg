@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321 321">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        letter-spacing: .26em;
+      }
+
+      .cls-3 {
+        letter-spacing: .27em;
+      }
+
+      .cls-4 {
+        letter-spacing: .27em;
+      }
+
+      .cls-5 {
+        fill: #b8972e;
+      }
+
+      .cls-6 {
+        letter-spacing: .2em;
+      }
+
+      .cls-7 {
+        letter-spacing: .2em;
+      }
+
+      .cls-8 {
+        letter-spacing: .18em;
+      }
+
+      .cls-9 {
+        fill: #1b2a4a;
+      }
+
+      .cls-10 {
+        font-family: CormorantGaramond-Regular, 'Cormorant Garamond';
+        font-size: 14px;
+      }
+
+      .cls-11 {
+        fill: #6b7fa3;
+      }
+
+      .cls-12 {
+        font-family: CormorantGaramond-SemiBold, 'Cormorant Garamond';
+        font-size: 24px;
+        font-weight: 600;
+      }
+    </style>
+  </defs>
+  <g id="Composit_Logo" data-name="Composit Logo">
+    <g>
+      <polygon class="cls-1" points="244.01 56.73 304.77 47.23 244.01 56.73 244.01 56.73"/>
+      <polygon class="cls-5" points="108.95 38.59 49.41 38.9 34.05 47.19 97.04 47.19 108.95 38.59"/>
+      <polygon class="cls-5" points="304.77 47.23 224.57 47.2 179.41 57.15 244.01 56.73 304.77 47.23"/>
+      <polygon class="cls-9" points="244.01 56.73 190.03 232.62 206.32 229.12 254.26 69.84 304.51 58.62 304.77 47.23 244.01 56.73"/>
+      <polygon class="cls-9" points="97.13 47.19 137.94 189.45 145.23 166.2 108.95 38.59 97.04 47.19 97.13 47.19"/>
+      <path class="cls-11" d="M244.01,56.73l-64.59.42-34.18,109.05-7.29,23.24L97.13,47.19h-63.15l36.29,118.71c5.19-2.94,11.18-4.63,17.56-4.63,19.7,0,35.68,15.97,35.68,35.68s-14.48,34.13-32.88,35.56l.02.08,99.35.04h.03s53.97-175.9,53.97-175.9h0Z"/>
+      <path class="cls-9" d="M52.15,196.95c0,19.7,15.97,35.68,35.68,35.68.94,0,1.88-.05,2.8-.12l-20.37-66.61c-10.81,6.13-18.12,17.73-18.12,31.05Z"/>
+    </g>
+  </g>
+  <g id="Text">
+    <text transform="translate(71.18 262.83)"><tspan class="cls-12"><tspan class="cls-8" x="0" y="0">V</tspan><tspan class="cls-3" x="20.09" y="0">AN</tspan><tspan class="cls-6" x="67.68" y="0">T</tspan><tspan class="cls-2" x="87.84" y="0">A</tspan><tspan class="cls-3" x="111.1" y="0">GE</tspan></tspan><tspan class="cls-10"><tspan class="cls-4" x="21.6" y="16.8">STR</tspan><tspan class="cls-7" x="58.11" y="16.8">A</tspan><tspan class="cls-4" x="70.74" y="16.8">TEGIC</tspan></tspan><tspan class="cls-10"><tspan class="cls-4" x="-14.56" y="33.6">COMMUNIC</tspan><tspan class="cls-7" x="93.62" y="33.6">A</tspan><tspan class="cls-4" x="106.24" y="33.6">TIONS</tspan></tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Vantage Strategic Communications — Full Lockup · Stacked Centered · Reversed (Navy / Dark Backgrounds) -->
+<!-- Use: Dark-background cover pages, premium print treatments, slide title slides -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+  <defs>
+    <style>
+      .m1 { fill: none; }
+      .m2 { fill: #B8972E; }
+      .m3 { fill: #1B2A4A; }
+      .m4 { fill: #6B7FA3; }
+    </style>
+  </defs>
+  <!-- Mark — centered, cream dot for dark background -->
+  <svg x="80" y="8" width="80" height="80" viewBox="0 0 321 321">
+    <polygon class="m1" points="244.01 75.57 304.77 66.06 244.01 75.57 244.01 75.57"/>
+    <polygon class="m2" points="108.95 57.42 49.41 57.74 34.05 66.03 97.04 66.03 108.95 57.42"/>
+    <polygon class="m2" points="304.77 66.06 224.57 66.03 179.41 75.99 244.01 75.57 304.77 66.06"/>
+    <polygon class="m3" style="fill:#FFFFFF;" points="244.01 75.57 190.03 251.46 206.32 247.96 254.26 88.67 304.51 77.46 304.77 66.06 244.01 75.57"/>
+    <polygon class="m3" style="fill:#FFFFFF;" points="97.13 66.03 137.94 208.28 145.23 185.04 108.95 57.42 97.04 66.03 97.13 66.03"/>
+    <path class="m4" d="M244.01,75.57l-64.59.42-34.18,109.05-7.29,23.24-40.82-142.26h-63.15l36.29,118.71c5.19-2.94,11.18-4.63,17.56-4.63,19.7,0,35.68,15.97,35.68,35.68s-14.48,34.13-32.88,35.56l.02.08,99.35.04h.03s53.97-175.9,53.97-175.9h0Z"/>
+    <path class="m3" style="fill:#F5F0E8;" d="M52.15,215.79c0,19.7,15.97,35.68,35.68,35.68.94,0,1.88-.05,2.8-.12l-20.37-66.61c-10.81,6.13-18.12,17.73-18.12,31.05Z"/>
+  </svg>
+  <!-- VANTAGE wordmark — cream -->
+  <text x="120" y="112"
+    text-anchor="middle"
+    font-family="CormorantGaramond-SemiBold, 'Cormorant Garamond', serif"
+    font-size="26"
+    font-weight="600"
+    letter-spacing="6.76"
+    fill="#F5F0E8"
+    style="text-transform:uppercase;">VANTAGE</text>
+  <!-- Gold ornamental rule -->
+  <line x1="72" y1="123" x2="168" y2="123" stroke="#B8972E" stroke-opacity="0.55" stroke-width="0.75"/>
+  <!-- Subtitle — gold -->
+  <text x="120" y="140"
+    text-anchor="middle"
+    font-family="CormorantGaramond-Regular, 'Cormorant Garamond', serif"
+    font-size="9.5"
+    letter-spacing="1.7"
+    fill="#B8972E"
+    style="text-transform:uppercase;">Strategic Communications</text>
+</svg>
