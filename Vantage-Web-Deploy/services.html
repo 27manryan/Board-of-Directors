@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Services | VANTAGE Strategic Communications</title>
+<meta name="description" content="Vantage Strategic Communications service tiers — Foundation, Clarity, and Command. Upstream messaging work for small business owners."/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary":              "#1B2A4A",
+          "secondary":            "#B8972E",
+          "slate-blue":           "#6B7FA3",
+          "cream":                "#F5F0E8",
+          "on-primary":           "#F5F0E8",
+          "on-surface":           "#1B2A4A",
+          "on-surface-variant":   "#6B7FA3",
+          "surface":              "#F5F0E8",
+          "surface-container":    "#f2ede5",
+          "surface-container-low":"#f8f3eb",
+          "surface-container-high":"#ece8e0",
+          "secondary-fixed":      "#ffe08a",
+          "on-secondary-fixed":   "#241a00",
+        },
+        fontFamily: {
+          "headline": ["Cormorant Garamond", "serif"],
+          "body":     ["Cormorant Garamond", "serif"],
+          "label":    ["Cormorant Garamond", "serif"],
+          "serif":    ["Cormorant Garamond", "serif"],
+        },
+        borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 200,'GRAD' 0,'opsz' 24; }
+  .fine-line           { width:1px;  background-color:#6B7FA3; opacity:0.15; }
+  .fine-line-horizontal{ height:1px; background-color:#6B7FA3; opacity:0.15; }
+
+  body { background-color:#F5F0E8; color:#1B2A4A; overflow-x:hidden; font-family:'Cormorant Garamond',serif; }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0; opacity:0.55;
+  }
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:radial-gradient(circle, rgba(107,127,163,0.12) 1px, transparent 1px);
+    background-size:32px 32px; pointer-events:none; z-index:0;
+  }
+
+  @keyframes blueprint-entry { 0%{opacity:0;transform:scale(1.02);filter:blur(8px);} 100%{opacity:1;transform:scale(1);filter:blur(0);} }
+  @keyframes slide-up        { 0%{opacity:0;transform:translateY(30px);} 100%{opacity:1;transform:translateY(0);} }
+  @keyframes drift           { 0%{transform:translate(0,0) rotate(0deg);} 50%{transform:translate(10px,15px) rotate(2deg);} 100%{transform:translate(0,0) rotate(0deg);} }
+
+  .animate-blueprint { animation:blueprint-entry 1.2s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-slide-up  { animation:slide-up 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-drift     { animation:drift 14s ease-in-out infinite; }
+
+  body { opacity:1; transition:opacity 0.35s ease, transform 0.35s ease; }
+  body.page-exit  { opacity:0; transform:translateY(-6px); }
+  body.page-enter { opacity:0; transform:translateY(8px); }
+
+  .staircase { position:fixed; bottom:0; right:0; opacity:0.065; pointer-events:none; z-index:1; }
+
+  .schematic-tier { transition:background-color 0.5s ease, box-shadow 0.5s ease; }
+  .clarity-card   { box-shadow:0 40px 100px rgba(27,42,74,0.18); }
+
+  header { box-shadow:0 1px 24px rgba(27,42,74,0.06); }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body relative overflow-x-hidden page-enter">
+
+<!-- Background geometry -->
+<svg class="fixed top-[15%] left-[5%] opacity-[0.07] animate-drift pointer-events-none z-[2]" height="120" viewBox="0 0 100 100" width="120"><circle cx="50" cy="50" fill="none" r="48" stroke="#1B2A4A" stroke-width="0.5"/><line stroke="#1B2A4A" stroke-width="0.2" x1="0" x2="100" y1="50" y2="50"/><line stroke="#1B2A4A" stroke-width="0.2" x1="50" x2="50" y1="0" y2="100"/></svg>
+<svg class="fixed top-[60%] right-[8%] opacity-[0.05] animate-drift pointer-events-none z-[2]" height="180" style="animation-delay:-5s;" viewBox="0 0 100 100" width="180"><rect fill="none" height="80" stroke="#1B2A4A" stroke-width="0.5" width="80" x="10" y="10"/><line stroke="#1B2A4A" stroke-width="0.3" x1="10" x2="90" y1="10" y2="90"/><line stroke="#1B2A4A" stroke-width="0.3" x1="90" x2="10" y1="10" y2="90"/></svg>
+<svg class="fixed top-[38%] left-[2%] opacity-[0.05] animate-drift pointer-events-none z-[2]" height="50" style="animation-delay:-9s;" viewBox="0 0 50 50" width="50"><path d="M25 2 L48 25 L25 48 L2 25 Z" stroke="#B8972E" stroke-width="0.5" fill="none"/></svg>
+<svg class="fixed bottom-[25%] left-[12%] opacity-[0.06] animate-drift pointer-events-none z-[2]" height="70" style="animation-delay:-3s;" viewBox="0 0 70 70" width="70"><circle cx="35" cy="35" fill="none" r="34" stroke="#1B2A4A" stroke-dasharray="2 5" stroke-width="0.4"/><circle cx="35" cy="35" fill="#B8972E" r="2"/></svg>
+
+<!-- Staircase -->
+<svg class="staircase" fill="none" height="280" viewBox="0 0 320 280" width="320">
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="100" y="0"/>
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="60"  y="40"/>
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="20"  y="80"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="160" x2="160" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="220" x2="220" y1="0" y2="260"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="280" x2="280" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.8" x1="100" x2="20"  y1="0" y2="80"/>
+  <line stroke="#1B2A4A" stroke-width="0.6" x1="160" x2="60"  y1="0" y2="100"/>
+</svg>
+
+<!-- Navigation -->
+<header class="bg-[#F5F0E8]/80 backdrop-blur-xl fixed top-0 z-50 w-full border-b border-secondary/10">
+  <nav class="flex justify-between items-center w-full px-12 py-8 max-w-screen-2xl mx-auto relative z-10">
+    <a href="index.html" class="block">
+      <img src="https://raw.githubusercontent.com/27manryan/Board-of-Directors/main/Assets/Vantage/Vantage%20Logo%20transparent.png" alt="Vantage Strategic Communications" class="h-10 w-auto"/>
+    </a>
+    <div class="hidden md:flex items-center space-x-12">
+      <a class="font-serif uppercase tracking-[0.2em] text-[10px] text-primary hover:text-secondary transition-colors" href="about.html">About</a>
+      <a class="font-serif uppercase tracking-[0.2em] text-[10px] text-secondary border-b border-secondary pb-1" href="services.html">Services</a>
+      <a class="font-serif uppercase tracking-[0.2em] text-[10px] text-primary hover:text-secondary transition-colors" href="contact.html">Contact</a>
+    </div>
+    <div class="md:hidden">
+      <span class="material-symbols-outlined text-primary cursor-pointer" onclick="document.getElementById('svc-mobile-menu').classList.toggle('hidden')">menu</span>
+    </div>
+  </nav>
+  <div id="svc-mobile-menu" class="hidden md:hidden bg-[#F5F0E8]/98 px-8 py-6 border-t border-secondary/10">
+    <div class="flex flex-col gap-5">
+      <a class="font-serif text-[10px] uppercase tracking-[0.2em] text-primary hover:text-secondary transition-colors" href="about.html">About</a>
+      <a class="font-serif text-[10px] uppercase tracking-[0.2em] text-secondary border-b border-secondary pb-1 w-fit" href="services.html">Services</a>
+      <a class="font-serif text-[10px] uppercase tracking-[0.2em] text-primary hover:text-secondary transition-colors" href="contact.html">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main class="pt-24 md:pt-32 relative z-10">
+
+  <!-- Geo Accent -->
+  <div class="flex justify-center mb-16 animate-blueprint">
+    <svg fill="none" height="120" viewBox="0 0 160 80" width="240">
+      <g opacity="0.8" stroke="#B8972E" stroke-width="0.4">
+        <line x1="80" x2="80" y1="40" y2="4"/><line x1="80" x2="80" y1="40" y2="76"/>
+        <line x1="80" x2="44" y1="40" y2="40"/><line x1="80" x2="116" y1="40" y2="40"/>
+        <circle cx="80" cy="40" r="30" stroke-dasharray="2 4"/>
+        <circle cx="80" cy="40" fill="#B8972E" r="1.5" stroke="none"/>
+      </g>
+      <ellipse cx="80" cy="40" fill="none" opacity="0.3" rx="52" ry="28" stroke="#B8972E" stroke-width="0.3"/>
+    </svg>
+  </div>
+
+  <!-- Hero -->
+  <section class="px-4 sm:px-8 md:px-12 pb-24 md:pb-32 max-w-screen-2xl mx-auto flex flex-col items-center text-center">
+    <p class="font-serif uppercase tracking-[0.4em] text-secondary text-[11px] mb-8 animate-slide-up" style="animation-delay:0.1s;">Upstream Messaging Work</p>
+    <h1 class="font-serif text-4xl sm:text-6xl md:text-8xl text-primary leading-[1.05] tracking-tight mb-10 max-w-5xl animate-slide-up" style="animation-delay:0.3s;">
+      Find the words.<br/><span class="italic text-secondary/80 font-light">Use them to grow.</span>
+    </h1>
+    <div class="fine-line-horizontal w-32 mb-10 animate-slide-up" style="animation-delay:0.5s;"></div>
+    <p class="font-serif text-xl md:text-2xl text-on-surface-variant max-w-3xl leading-relaxed animate-slide-up font-light italic" style="animation-delay:0.6s;">
+      We are not a marketing agency. We work upstream at the level of message and meaning before the question of channels even arises. You leave with the foundation that every agency, every tool, and every campaign you run actually requires.
+    </p>
+  </section>
+
+  <!-- Service Tiers -->
+  <section class="py-24 md:py-32 px-4 sm:px-8 md:px-12 relative overflow-hidden">
+    <div class="max-w-screen-2xl mx-auto relative z-10">
+      <div class="mb-24 text-center animate-slide-up">
+        <h2 class="font-serif text-5xl md:text-6xl text-primary mb-6 italic font-light tracking-tight">Project Tiers</h2>
+        <p class="font-serif uppercase tracking-[0.5em] text-on-surface-variant text-[10px]">Three Engagement Levels · Choose by Scope</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-secondary/10 bg-surface/50 backdrop-blur-sm animate-blueprint service-grid">
+
+        <!-- Foundation -->
+        <div class="schematic-tier p-12 lg:p-16 flex flex-col border-r border-secondary/10 group hover:bg-surface-container-low transition-colors duration-500">
+          <div class="mb-16 relative">
+            <span class="absolute -top-8 -left-4 text-[8px] font-serif text-secondary/40 tracking-widest">FIG. 01</span>
+            <div class="flex items-center gap-4 mb-10">
+              <span class="material-symbols-outlined text-4xl text-secondary/40 group-hover:text-secondary transition-colors" style="font-variation-settings:'wght' 100;">architecture</span>
+              <div class="h-[0.5px] flex-grow bg-secondary/20"></div>
+            </div>
+            <h3 class="font-serif text-4xl text-primary mb-2 font-medium italic">Foundation</h3>
+            <p class="font-serif uppercase tracking-[0.2em] text-secondary/60 text-[9px]">$1,500 – $2,500</p>
+          </div>
+          <div class="space-y-12 flex-grow">
+            <p class="font-serif text-lg text-on-surface-variant leading-relaxed italic border-l border-secondary/30 pl-8 font-light">
+              The core positioning work. For businesses that need to define who they are and who they are for before anything else gets built.
+            </p>
+            <ul class="space-y-6">
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 border border-secondary/40 rotate-45"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Brand Positioning Statement</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 border border-secondary/40 rotate-45"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Core Value Proposition</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 border border-secondary/40 rotate-45"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Key Messages (3–5)</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 border border-secondary/40 rotate-45"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Elevator Pitch (3 Versions)</span></li>
+            </ul>
+          </div>
+          <div class="mt-16 pt-12 border-t border-secondary/10">
+            <a href="contact.html" class="block w-full border border-primary/20 text-primary font-serif uppercase tracking-[0.3em] py-5 text-[10px] text-center hover:bg-primary hover:text-on-primary transition-all duration-700">Start Here</a>
+          </div>
+        </div>
+
+        <!-- Clarity — Featured -->
+        <div class="schematic-tier clarity-card bg-primary text-on-primary p-12 lg:p-16 flex flex-col border-r border-secondary/10 relative z-10 scale-[1.02]">
+          <div class="mb-16 relative">
+            <span class="absolute -top-8 -left-4 text-[8px] font-serif text-secondary-fixed/40 tracking-widest">FIG. 02 / CORE</span>
+            <div class="flex items-center gap-4 mb-10">
+              <span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings:'FILL' 1,'wght' 100;">visibility</span>
+              <div class="h-[0.5px] flex-grow bg-secondary/30"></div>
+            </div>
+            <h3 class="font-serif text-4xl mb-2 italic font-medium">Clarity</h3>
+            <p class="font-serif uppercase tracking-[0.2em] text-secondary-fixed/70 text-[9px]">$3,000 – $5,000</p>
+          </div>
+          <div class="space-y-12 flex-grow">
+            <p class="font-serif text-lg text-on-primary/70 leading-relaxed italic border-l border-secondary/40 pl-8 font-light">
+              Everything in Foundation, plus the audience work, voice guide, and copy that makes the strategy visible to customers.
+            </p>
+            <ul class="space-y-6">
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 bg-secondary/80 rounded-full"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-on-primary/90">Everything in Foundation</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 bg-secondary/80 rounded-full"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-on-primary/90">Audience Personas</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 bg-secondary/80 rounded-full"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-on-primary/90">Tone of Voice Guide</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 bg-secondary/80 rounded-full"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-on-primary/90">Brand Story Narrative</span></li>
+              <li class="flex items-center gap-5"><div class="w-1.5 h-1.5 bg-secondary/80 rounded-full"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-on-primary/90">Sample Copy (Homepage, About, LinkedIn)</span></li>
+            </ul>
+          </div>
+          <div class="mt-16 pt-12 border-t border-white/10">
+            <a href="contact.html" class="block w-full bg-secondary text-on-secondary-fixed font-serif uppercase tracking-[0.3em] py-5 text-[10px] text-center font-semibold hover:brightness-110 transition-all">Most Common Starting Point</a>
+          </div>
+        </div>
+
+        <!-- Command -->
+        <div class="schematic-tier p-12 lg:p-16 flex flex-col group hover:bg-surface-container-low transition-colors duration-500">
+          <div class="mb-16 relative">
+            <span class="absolute -top-8 -left-4 text-[8px] font-serif text-secondary/40 tracking-widest">FIG. 03 / APEX</span>
+            <div class="flex items-center gap-4 mb-10">
+              <span class="material-symbols-outlined text-4xl text-secondary/40 group-hover:text-secondary transition-colors" style="font-variation-settings:'wght' 100;">diamond</span>
+              <div class="h-[0.5px] flex-grow bg-secondary/20"></div>
+            </div>
+            <h3 class="font-serif text-4xl text-primary mb-2 italic font-medium">Command</h3>
+            <p class="font-serif uppercase tracking-[0.2em] text-secondary/60 text-[9px]">$6,000 – $8,000</p>
+          </div>
+          <div class="space-y-12 flex-grow">
+            <p class="font-serif text-lg text-on-surface-variant leading-relaxed italic border-l border-secondary/30 pl-8 font-light">
+              The complete messaging system. Competitive positioning, internal guide, implementation strategy, and the full copy package.
+            </p>
+            <ul class="space-y-6">
+              <li class="flex items-center gap-5"><div class="w-4 h-[0.5px] bg-secondary/40"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Everything in Clarity</span></li>
+              <li class="flex items-center gap-5"><div class="w-4 h-[0.5px] bg-secondary/40"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Competitive Positioning</span></li>
+              <li class="flex items-center gap-5"><div class="w-4 h-[0.5px] bg-secondary/40"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Internal Messaging Guide</span></li>
+              <li class="flex items-center gap-5"><div class="w-4 h-[0.5px] bg-secondary/40"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Implementation Strategy</span></li>
+              <li class="flex items-center gap-5"><div class="w-4 h-[0.5px] bg-secondary/40"></div><span class="font-serif text-[11px] uppercase tracking-[0.2em] text-primary/70">Quarterly Messaging Audit</span></li>
+            </ul>
+          </div>
+          <div class="mt-16 pt-12 border-t border-secondary/10">
+            <a href="contact.html" class="block w-full border border-primary/20 text-primary font-serif uppercase tracking-[0.3em] py-5 text-[10px] text-center hover:bg-primary hover:text-on-primary transition-all duration-700">Let's Talk Scope</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Veteran Discount Note -->
+      <p class="font-serif text-sm text-on-surface-variant italic text-center mt-10 opacity-70">A 15% discount is available for veterans and active-duty service members. Self-reported.</p>
+    </div>
+  </section>
+
+  <!-- Add-Ons -->
+  <section class="py-24 md:py-32 px-4 sm:px-8 md:px-12 max-w-screen-2xl mx-auto relative">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8 animate-slide-up">
+      <div class="max-w-xl">
+        <h2 class="font-serif text-5xl md:text-6xl text-primary mb-6 italic font-light tracking-tight">Standalone Add-Ons</h2>
+        <p class="font-serif uppercase tracking-[0.4em] text-on-surface-variant text-[10px]">Available independently or alongside any tier</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-secondary/10 bg-white/20 animate-slide-up" style="animation-delay:0.2s;">
+      <!-- Add-on 1 -->
+      <div class="group p-10 border-r border-b border-secondary/10 hover:bg-primary transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[280px]">
+        <div>
+          <p class="font-serif text-[9px] uppercase tracking-[0.4em] text-secondary group-hover:text-secondary-fixed mb-10 italic">Add-on 01</p>
+          <h4 class="font-serif text-3xl text-primary group-hover:text-on-primary mb-6 font-light italic">Competitive Audit</h4>
+          <p class="font-serif text-base text-on-surface-variant group-hover:text-on-primary/70 leading-snug font-light">
+            A focused analysis of 3–5 competitors — messaging, positioning, gaps. Standalone front-door product or input for a larger engagement.
+          </p>
+        </div>
+        <div class="mt-8 flex items-center justify-between opacity-40 group-hover:opacity-100 transition-opacity">
+          <span class="font-serif text-sm text-secondary group-hover:text-secondary-fixed italic">$750 – $1,000</span>
+          <span class="material-symbols-outlined text-secondary text-xl group-hover:text-secondary-fixed" style="font-variation-settings:'wght' 100;">arrow_right_alt</span>
+        </div>
+      </div>
+      <!-- Add-on 2 -->
+      <div class="group p-10 border-b border-secondary/10 hover:bg-primary transition-all duration-700 relative overflow-hidden flex flex-col justify-between min-h-[280px]">
+        <div>
+          <p class="font-serif text-[9px] uppercase tracking-[0.4em] text-secondary group-hover:text-secondary-fixed mb-10 italic">Add-on 02</p>
+          <h4 class="font-serif text-3xl text-primary group-hover:text-on-primary mb-6 font-light italic">Internal Messaging Guide</h4>
+          <p class="font-serif text-base text-on-surface-variant group-hover:text-on-primary/70 leading-snug font-light">
+            A 3-page pocket playbook that turns external positioning into practical language for your team. For businesses with 1–5 people.
+          </p>
+        </div>
+        <div class="mt-8 flex items-center justify-between opacity-40 group-hover:opacity-100 transition-opacity">
+          <span class="font-serif text-sm text-secondary group-hover:text-secondary-fixed italic">$750</span>
+          <span class="material-symbols-outlined text-secondary text-xl group-hover:text-secondary-fixed" style="font-variation-settings:'wght' 100;">arrow_right_alt</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-primary text-on-primary py-32 md:py-48 px-4 sm:px-8 md:px-12 relative overflow-hidden">
+    <div class="max-w-screen-xl mx-auto flex flex-col items-center text-center relative z-10">
+      <p class="font-serif uppercase tracking-[0.6em] text-secondary text-[10px] mb-16 italic">Not Sure Where to Start</p>
+      <h2 class="font-serif text-5xl md:text-7xl mb-16 leading-[1.1] font-light max-w-4xl tracking-tight">Tell me where the words<br/><span class="italic font-light opacity-80">aren't working.</span></h2>
+      <a href="contact.html" class="bg-secondary text-on-secondary-fixed px-16 py-6 font-serif uppercase tracking-[0.3em] text-[10px] font-bold hover:brightness-110 transition-all shadow-2xl shadow-black/30">
+        Start a Conversation
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-[#f8f3eb] py-24 px-12 border-t border-secondary/10 relative z-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-end w-full max-w-screen-2xl mx-auto">
+    <div>
+      <img src="https://raw.githubusercontent.com/27manryan/Board-of-Directors/main/Assets/Vantage/Vantage%20Logo%20transparent.png" alt="Vantage" class="h-8 w-auto mb-6"/>
+      <p class="font-serif text-[10px] tracking-[0.4em] uppercase text-on-surface-variant leading-loose italic">
+        &copy; 2026 VANTAGE STRATEGIC COMMUNICATIONS. ALL RIGHTS RESERVED.
+      </p>
+    </div>
+    <div class="flex flex-wrap md:justify-end gap-16">
+      <a class="font-serif text-[10px] tracking-[0.3em] uppercase text-on-surface-variant hover:text-secondary transition-colors border-b border-transparent hover:border-secondary pb-1" href="#">Privacy Policy</a>
+      <a class="font-serif text-[10px] tracking-[0.3em] uppercase text-on-surface-variant hover:text-secondary transition-colors border-b border-transparent hover:border-secondary pb-1" href="https://www.linkedin.com/in/ryanmancuso/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(() => { document.body.classList.remove('page-enter'); });
+  });
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (!href || href.startsWith('#') || href.includes('mailto') || href.includes('http') || href.includes('linkedin')) return;
+      e.preventDefault();
+      document.body.classList.add('page-exit');
+      setTimeout(() => { window.location.href = href; }, 340);
+    });
+  });
+</script>
+</body>
+</html>

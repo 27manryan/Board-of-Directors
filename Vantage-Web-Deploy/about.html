@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About | VANTAGE Strategic Communications</title>
+<meta name="description" content="Ryan Mancuso — founder of Vantage Strategic Communications. Nine years of Air Force Public Affairs. Strategic positioning for small business owners."/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary":              "#1B2A4A",
+          "secondary":            "#B8972E",
+          "slate-blue":           "#6B7FA3",
+          "cream":                "#F5F0E8",
+          "on-primary":           "#F5F0E8",
+          "on-surface":           "#1B2A4A",
+          "on-surface-variant":   "#6B7FA3",
+          "surface":              "#F5F0E8",
+          "surface-container":    "#f2ede5",
+          "surface-container-low":"#f8f3eb",
+          "surface-container-high":"#ece8e0",
+          "outline-variant":      "#c5c6cf",
+        },
+        fontFamily: {
+          "headline": ["Cormorant Garamond", "serif"],
+          "body":     ["Cormorant Garamond", "serif"],
+          "label":    ["Cormorant Garamond", "serif"],
+          "serif":    ["Cormorant Garamond", "serif"],
+        },
+        borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 200,'GRAD' 0,'opsz' 24; }
+
+  body { background-color:#F5F0E8; color:#1B2A4A; overflow-x:hidden; font-family:'Cormorant Garamond',serif; }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:1; opacity:0.55;
+  }
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:radial-gradient(circle, rgba(107,127,163,0.12) 1px, transparent 1px);
+    background-size:32px 32px; pointer-events:none; z-index:1;
+  }
+
+  .content-wrap { position:relative; z-index:10; }
+
+  @keyframes architecturalRise {
+    0%  { opacity:0; transform:translateY(24px) scale(0.99); }
+    100%{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+  @keyframes drift  { 0%{transform:translate(0,0) rotate(0deg);} 50%{transform:translate(15px,10px) rotate(5deg);} 100%{transform:translate(0,0) rotate(0deg);} }
+
+  .animate-rise   { animation:architecturalRise 1s cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-fadeIn { animation:fadeIn 1.2s ease both; }
+
+  body { opacity:1; transition:opacity 0.35s ease, transform 0.35s ease; }
+  body.page-exit  { opacity:0; transform:translateY(-6px); }
+  body.page-enter { opacity:0; transform:translateY(8px); }
+
+  .staircase { position:fixed; bottom:0; right:0; opacity:0.065; pointer-events:none; z-index:1; }
+  .geo-float { position:absolute; pointer-events:none; will-change:transform; z-index:2; }
+
+  .intellectual-spacing { line-height: 1.9; }
+
+  .depth-image { box-shadow:inset 0 0 0 1px rgba(107,127,163,0.15), 0 24px 80px rgba(27,42,74,0.1); }
+
+  header { box-shadow:0 1px 24px rgba(27,42,74,0.06); }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body font-light page-enter">
+
+<!-- Navigation -->
+<header class="bg-[#F5F0E8]/90 backdrop-blur-md top-0 z-50 fixed w-full animate-fadeIn">
+  <nav class="flex justify-between items-center w-full px-6 md:px-12 py-8 max-w-screen-2xl mx-auto">
+    <a href="index.html" class="block">
+      <img src="https://raw.githubusercontent.com/27manryan/Board-of-Directors/main/Assets/Vantage/Vantage%20Logo%20transparent.png" alt="Vantage Strategic Communications" class="h-10 w-auto"/>
+    </a>
+    <div class="hidden md:flex items-center gap-10">
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-secondary border-b border-secondary pb-0.5 font-medium" href="about.html">About</a>
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-primary hover:text-secondary transition-colors" href="services.html">Services</a>
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-primary hover:text-secondary transition-colors" href="contact.html">Contact</a>
+      <div class="ml-4">
+        <a href="contact.html" class="bg-primary text-on-primary px-8 py-3 text-xs font-label font-medium uppercase tracking-widest hover:bg-opacity-90 transition-all">Inquire</a>
+      </div>
+    </div>
+    <button class="md:hidden text-primary" onclick="document.getElementById('about-mobile-menu').classList.toggle('hidden')">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </nav>
+  <div id="about-mobile-menu" class="hidden md:hidden bg-[#F5F0E8]/98 px-6 py-6 border-t border-secondary/10">
+    <div class="flex flex-col gap-6">
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-secondary" href="about.html">About</a>
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-primary hover:text-secondary transition-colors" href="services.html">Services</a>
+      <a class="font-label text-xs uppercase tracking-[0.25em] text-primary hover:text-secondary transition-colors" href="contact.html">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main class="pt-24 md:pt-32 content-wrap">
+
+  <!-- Hero -->
+  <section class="px-4 sm:px-8 md:px-12 py-24 md:py-32 max-w-screen-2xl mx-auto animate-rise relative">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-10">
+        <span class="font-serif text-xs uppercase tracking-[0.4em] text-secondary mb-8 block font-medium">Origin</span>
+        <h1 class="font-serif text-5xl sm:text-7xl md:text-[9rem] font-light tracking-tighter text-primary leading-[0.9] mb-16">
+          Where the words<br/><span class="italic pl-8 md:pl-24 block">aren't working.</span>
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- Orbital Schematic -->
+  <section class="py-20 flex flex-col items-center animate-fadeIn relative">
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04]">
+      <div class="w-[600px] h-[600px] border border-primary rounded-full"></div>
+    </div>
+    <svg class="opacity-90 cursor-crosshair" fill="none" height="380" viewBox="0 0 400 400" width="380">
+      <circle cx="200" cy="200" r="195" stroke="#1B2A4A" stroke-dasharray="1 4" stroke-width="0.3"/>
+      <circle cx="200" cy="200" r="160" stroke="#1B2A4A" stroke-dasharray="2 4" stroke-width="0.5"/>
+      <circle cx="200" cy="200" r="130" stroke="#B8972E" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="200" cy="200" r="80"  stroke="#1B2A4A" stroke-dasharray="1 2" stroke-width="0.5"/>
+      <line stroke="#1B2A4A" stroke-width="0.4" x1="200" x2="200" y1="5" y2="395"/>
+      <line stroke="#1B2A4A" stroke-width="0.4" x1="5" x2="395" y1="200" y2="200"/>
+      <line stroke="#1B2A4A" stroke-width="0.4" x1="60" x2="340" y1="340" y2="60"/>
+      <line stroke="#1B2A4A" stroke-width="0.4" x1="60" x2="340" y1="60" y2="340"/>
+      <path d="M185 200 L200 185 L215 200 L200 215 Z" fill="#B8972E" opacity="0.7"/>
+      <circle cx="200" cy="200" fill="#1B2A4A" r="4"/>
+      <circle cx="100" cy="100" fill="#B8972E" r="3"/>
+      <circle cx="300" cy="100" fill="#1B2A4A" r="3"/>
+      <circle cx="300" cy="300" fill="#B8972E" r="3"/>
+      <circle cx="100" cy="300" fill="#1B2A4A" r="3"/>
+    </svg>
+  </section>
+
+  <!-- Foundation Section — Locked Copy -->
+  <section class="bg-surface-container-low/40 py-32 md:py-48 px-4 sm:px-8 md:px-12 relative animate-rise">
+    <div class="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+      <div>
+        <span class="font-serif text-xs uppercase tracking-[0.4em] text-secondary mb-6 block font-medium">About</span>
+        <h2 class="font-serif text-4xl md:text-5xl mb-12 text-primary leading-tight font-light">Ryan Mancuso<br/><span class="italic">Founder, Vantage</span></h2>
+        <div class="w-16 h-[0.5px] bg-secondary mb-12 opacity-50"></div>
+      </div>
+      <div class="space-y-8">
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          I spent my time in the military explaining things to audiences that didn't know they needed to understand them. Not just to people in uniform but to the public, and to communities near a flight line that just wanted their windows to stop rattling. My job was to close the distance between inside and outside the fence, and project the right message to every other onlooker.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          That's still my job.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          Most businesses aren't hard to understand. But when a passionate founder starts explaining their own business, eyes glaze over. Every detail, every decision, every reason something works the way it does all passes directly to the customer. Only it stops making sense, and the customer can't carry forward the experience that founder intended to give.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          I started Vantage because I kept meeting people like that. Talented, serious, and doing real work but losing ground to competitors who were louder, not better or more passionate.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          I'll never know your business better than you do but I do know how to translate it. I'm here to make your customer look good for choosing you.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-on-surface font-light">
+          When you work with Vantage, you work with me start to finish. Nothing gets lost between the vision and the words.
+        </p>
+        <p class="font-serif text-xl md:text-2xl intellectual-spacing text-secondary font-light italic">
+          If you're reading this and something just clicked — if there's a thread you can feel but can't quite grasp — that's where we start.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Three Lenses -->
+  <section class="py-32 md:py-48 px-4 sm:px-8 md:px-12 max-w-screen-2xl mx-auto animate-rise relative overflow-hidden">
+    <div class="geo-float top-0 right-[5%] opacity-[0.05]" data-parallax="0.12">
+      <svg fill="none" height="100" viewBox="0 0 100 100" width="100"><circle cx="50" cy="50" r="49" stroke="#1B2A4A" stroke-dasharray="3 7" stroke-width="0.4"/><path d="M50 1 L99 50 L50 99 L1 50 Z" stroke="#B8972E" stroke-width="0.3" fill="none"/></svg>
+    </div>
+    <div class="mb-32 text-center relative">
+      <span class="font-serif text-xs uppercase tracking-[0.4em] text-secondary mb-4 block font-medium">How We Work</span>
+      <h2 class="font-serif text-5xl md:text-7xl font-light text-primary tracking-tight">The Three Lenses</h2>
+      <div class="w-32 h-px bg-secondary mx-auto mt-12 opacity-30"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-outline-variant/30">
+      <!-- Lens I -->
+      <div class="p-16 md:p-20 bg-transparent border-r border-outline-variant/30 hover:bg-surface-container-low transition-all duration-700 group relative overflow-hidden">
+        <span class="font-serif text-[10rem] leading-none text-secondary/5 mb-8 block group-hover:text-secondary/15 transition-all duration-1000 absolute top-4 -right-4 select-none font-light italic">I</span>
+        <h3 class="font-serif text-4xl mb-8 text-primary tracking-tight relative z-10 font-medium">A Clear Objective</h3>
+        <p class="font-serif text-lg intellectual-spacing text-on-surface-variant font-light relative z-10">
+          The victorious party has an objective clear enough to make decisions from. "Grow my business" is not an objective. Discovery doesn't end until the client can name a specific, owned goal.
+        </p>
+      </div>
+      <!-- Lens II -->
+      <div class="p-16 md:p-20 bg-transparent border-r border-outline-variant/30 hover:bg-surface-container-low transition-all duration-700 group relative overflow-hidden">
+        <span class="font-serif text-[10rem] leading-none text-secondary/5 mb-8 block group-hover:text-secondary/15 transition-all duration-1000 absolute top-4 -right-4 select-none font-light italic">II</span>
+        <h3 class="font-serif text-4xl mb-8 text-primary tracking-tight relative z-10 font-medium">The Ability to Adapt</h3>
+        <p class="font-serif text-lg intellectual-spacing text-on-surface-variant font-light relative z-10">
+          Strategy that cannot flex to new information is not strategy. Clients who diagnose honestly and adjust are coachable. Fixed assumptions without new data are a yellow flag.
+        </p>
+      </div>
+      <!-- Lens III -->
+      <div class="p-16 md:p-20 bg-transparent hover:bg-surface-container-low transition-all duration-700 group relative overflow-hidden">
+        <span class="font-serif text-[10rem] leading-none text-secondary/5 mb-8 block group-hover:text-secondary/15 transition-all duration-1000 absolute top-4 -right-4 select-none font-light italic">III</span>
+        <h3 class="font-serif text-4xl mb-8 text-primary tracking-tight relative z-10 font-medium">The Will to Execute</h3>
+        <p class="font-serif text-lg intellectual-spacing text-on-surface-variant font-light relative z-10">
+          Brilliant strategy executed halfheartedly loses to mediocre strategy executed with conviction. In discovery, we listen for the personal reason the business exists. That's where authentic voice hides.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-primary text-on-primary py-32 md:py-48 px-4 sm:px-8 md:px-12 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center relative z-10 animate-rise">
+      <div class="mb-16 flex justify-center"><div class="w-24 h-px bg-secondary"></div></div>
+      <h2 class="font-serif italic text-3xl sm:text-4xl md:text-7xl font-light leading-tight mb-16 md:mb-24">
+        "I don't know your business better than you do.<br/>I know how to translate it."
+      </h2>
+      <a class="inline-block border border-secondary text-secondary px-20 py-8 font-serif text-xs tracking-[0.6em] uppercase hover:bg-secondary hover:text-primary transition-all duration-700 font-medium" href="contact.html">
+        Start the Conversation
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-[#F5F0E8] py-20 px-6 md:px-12 border-t border-secondary/10 content-wrap">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-end w-full max-w-screen-2xl mx-auto">
+    <div>
+      <img src="https://raw.githubusercontent.com/27manryan/Board-of-Directors/main/Assets/Vantage/Vantage%20Logo%20transparent.png" alt="Vantage" class="h-8 w-auto mb-6"/>
+      <div class="font-serif text-[10px] tracking-[0.3em] uppercase text-on-surface-variant font-medium">
+        &copy; 2026 VANTAGE STRATEGIC COMMUNICATIONS. ALL RIGHTS RESERVED.
+      </div>
+    </div>
+    <div class="flex space-x-12 justify-end">
+      <a class="font-serif text-[10px] tracking-[0.3em] uppercase text-on-surface-variant hover:text-secondary transition-colors font-medium" href="#">Privacy Policy</a>
+      <a class="font-serif text-[10px] tracking-[0.3em] uppercase text-on-surface-variant hover:text-secondary transition-colors font-medium" href="https://www.linkedin.com/in/ryanmancuso/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Staircase -->
+<svg class="staircase" fill="none" height="280" viewBox="0 0 320 280" width="320">
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="100" y="0"/>
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="60"  y="40"/>
+  <rect height="180" stroke="#1B2A4A" stroke-width="0.8" width="220" x="20"  y="80"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="120" x2="120" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="160" x2="160" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="200" x2="200" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="240" x2="240" y1="0" y2="260"/>
+  <line stroke="#1B2A4A" stroke-width="0.4" x1="280" x2="280" y1="0" y2="220"/>
+  <line stroke="#1B2A4A" stroke-width="0.8" x1="100" x2="20"  y1="0" y2="80"/>
+  <line stroke="#1B2A4A" stroke-width="0.6" x1="160" x2="60"  y1="0" y2="100"/>
+</svg>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(() => { document.body.classList.remove('page-enter'); });
+  });
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (!href || href.startsWith('#') || href.includes('mailto') || href.includes('http') || href.includes('linkedin')) return;
+      e.preventDefault();
+      document.body.classList.add('page-exit');
+      setTimeout(() => { window.location.href = href; }, 340);
+    });
+  });
+  window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    document.querySelectorAll('[data-parallax]').forEach(el => {
+      const speed = parseFloat(el.getAttribute('data-parallax')) || 0.15;
+      el.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+    const staircase = document.querySelector('.staircase');
+    if (staircase) staircase.style.transform = `translateY(${scrolled * -0.05}px)`;
+  }, { passive: true });
+</script>
+</body>
+</html>
