@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPM Drill — Vantage Strategic Communications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1B2A4A;
+      --navy-d: #0D1520;
+      --gold:   #B8972E;
+      --slate:  #6B7FA3;
+      --cream:  #F5F0E8;
+      --white:  #FFFFFF;
+      --border: #D8D0C4;
+      --error:  #8B4A4A;
+      --error-bg: #FDF0F0;
+      --error-border: #E8CCCC;
+      --font: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--cream);
+      min-height: 100vh;
+      color: var(--navy-d);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--navy);
+      border-bottom: 2px solid var(--gold);
+      padding: 18px 20px 16px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0;
+    }
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: var(--slate);
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: var(--cream);
+      position: relative; flex-shrink: 0;
+      border-top: 3px solid var(--gold);
+    }
+    .header-title { color: var(--cream); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; }
+    .header-sub   { color: var(--slate); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    #home-btn {
+      background: none; border: 1px solid #2A3A5A;
+      color: var(--slate); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 6px 12px; border-radius: 3px;
+      cursor: pointer; font-family: var(--font); font-weight: 600;
+      display: none;
+    }
+    #home-btn:hover { color: var(--cream); }
+
+    /* ── MODE TABS ── */
+    #mode-tabs {
+      display: none;
+      gap: 0; background: var(--navy-d);
+      border-radius: 4px; width: fit-content;
+      margin-top: 14px;
+    }
+    .mode-tab {
+      padding: 8px 16px; font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 700; border: none;
+      cursor: pointer; border-radius: 4px; font-family: var(--font);
+      background: transparent; color: var(--slate); transition: all 0.15s;
+    }
+    .mode-tab.active { background: var(--gold); color: var(--navy); }
+
+    /* ── MAIN ── */
+    main { max-width: 640px; margin: 0 auto; padding: 0 0 60px; }
+
+    /* ── HOME SCREEN ── */
+    #home-screen { padding: 32px 20px; }
+    .upstream-box {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 5px; padding: 18px 18px 16px; margin-bottom: 20px;
+    }
+    .upstream-box textarea {
+      width: 100%; background: var(--cream); border: 1px solid var(--border);
+      border-radius: 4px; padding: 10px 12px; font-size: 13px;
+      color: var(--navy-d); font-family: var(--font); resize: none;
+      outline: none; line-height: 1.6;
+    }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mode-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-top: 3px solid var(--gold); border-radius: 5px;
+      padding: 18px 16px; text-align: left; cursor: pointer;
+      font-family: var(--font); transition: box-shadow 0.15s;
+    }
+    .mode-card:hover { box-shadow: 0 2px 12px rgba(27,42,74,0.1); }
+    .mode-card-title { font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+    .mode-card-desc { color: var(--slate); font-size: 12px; line-height: 1.6; margin-bottom: 10px; }
+    .mode-card-time { font-size: 10px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+    .home-note { color: #B8B0A4; font-size: 11px; text-align: center; margin-top: 20px; letter-spacing: 0.06em; font-style: italic; }
+
+    /* ── DRILL SCREEN ── */
+    #drill-screen { display: none; padding: 16px 20px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-left: 3px solid var(--gold); border-radius: 5px;
+      padding: 16px 18px; margin-bottom: 14px;
+    }
+    .card-dark {
+      background: var(--navy); border-left: 3px solid var(--gold);
+      border-radius: 5px; padding: 18px 18px 14px; margin-bottom: 14px;
+    }
+    .card-info {
+      background: #F0EDE8; border: 1px solid var(--border);
+      border-radius: 5px; padding: 12px 16px; margin-bottom: 14px;
+    }
+    .card-warn {
+      background: #FDF8F0; border: 1px solid #E8DCC8;
+      border-left: 3px solid var(--gold); border-radius: 5px;
+      padding: 12px 16px; margin-bottom: 14px;
+    }
+    .card-slate {
+      background: #F0F4F8; border: 1px solid var(--border);
+      border-left: 3px solid var(--slate); border-radius: 5px;
+      padding: 12px 16px; margin-bottom: 14px;
+    }
+
+    /* ── LABELS ── */
+    .label {
+      font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+      font-weight: 600; color: var(--gold); margin-bottom: 8px;
+      font-family: var(--font);
+    }
+    .label-slate { color: var(--slate); }
+    .label-error { color: var(--error); }
+
+    /* ── TYPOGRAPHY ── */
+    .scenario-text { color: var(--navy); font-size: 15px; line-height: 1.7; font-style: italic; }
+    .body-text     { color: var(--navy-d); font-size: 14px; line-height: 1.65; }
+    .body-light    { color: #E8E0D4; font-size: 14px; line-height: 1.75; white-space: pre-wrap; }
+    .hint-text     { color: var(--slate); font-size: 13px; line-height: 1.6; font-style: italic; margin-bottom: 12px; }
+
+    /* ── DISCOVERY ITEMS ── */
+    .discovery-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+    .discovery-item:last-child { margin-bottom: 0; }
+    .disc-num {
+      width: 22px; height: 22px; background: var(--navy); color: var(--gold);
+      border-radius: 2px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── FLAW BADGE ── */
+    .flaw-badge {
+      font-size: 8.5px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--error); background: var(--error-bg); border: 1px solid var(--error-border);
+      padding: 3px 8px; border-radius: 2px; font-weight: 700; flex-shrink: 0;
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+
+    /* ── BLOCKQUOTE ── */
+    blockquote {
+      color: var(--slate); font-size: 15px; line-height: 1.65;
+      padding: 12px 16px; background: #F0EDE8; border-radius: 4px;
+      border-left: 3px solid var(--slate); font-style: italic;
+      margin: 0 0 12px;
+    }
+
+    /* ── TEXTAREA ── */
+    .answer-area {
+      width: 100%; background: var(--white); border: 1px solid var(--border);
+      border-radius: 4px; padding: 12px 14px; font-size: 14px;
+      line-height: 1.65; color: var(--navy-d); font-family: var(--font);
+      resize: vertical; outline: none; display: block; margin-bottom: 10px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 9px 20px; font-size: 10px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700; border: none;
+      cursor: pointer; border-radius: 3px; font-family: var(--font);
+      transition: opacity 0.15s;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary   { background: var(--navy); color: var(--cream); }
+    .btn-gold      { background: var(--gold); color: var(--navy); }
+    .btn-secondary { background: transparent; color: var(--slate); border: 1px solid var(--border); }
+    .btn-hint      {
+      background: none; border: none; color: var(--gold); font-size: 12px;
+      cursor: pointer; font-family: var(--font); letter-spacing: 0.08em;
+      text-decoration: underline; text-underline-offset: 3px; padding: 0;
+    }
+
+    /* ── SCORE BARS ── */
+    .score-row { margin-bottom: 8px; }
+    .score-label-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+    .score-key { font-size: 11px; color: var(--slate); letter-spacing: 0.06em; }
+    .score-val { font-size: 12px; font-weight: 700; }
+    .score-track { height: 2px; background: #2A3A5A; border-radius: 1px; }
+    .score-fill  { height: 100%; border-radius: 1px; transition: width 1s ease; }
+
+    /* ── SPINNER ── */
+    #spinner {
+      display: none; text-align: center; padding: 40px 20px;
+    }
+    .spin-ring {
+      width: 32px; height: 32px; border: 2px solid var(--navy);
+      border-top-color: var(--gold); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin-label { color: var(--slate); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+    /* ── ERROR BOX ── */
+    .error-box {
+      background: var(--error-bg); border: 1px solid var(--error-border);
+      border-radius: 4px; padding: 16px; margin-bottom: 16px;
+    }
+    .error-text { color: var(--error); font-size: 13px; }
+
+    /* ── SETUP NOTICE ── */
+    #setup-notice {
+      background: #FFF8E8; border: 1px solid #E8D890; border-left: 3px solid var(--gold);
+      border-radius: 5px; padding: 14px 16px; margin: 16px 20px 0;
+      font-size: 13px; color: #5A4A20; line-height: 1.6; display: none;
+    }
+    #setup-notice code {
+      background: #F0E8C8; padding: 1px 5px; border-radius: 2px;
+      font-size: 12px; font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-top">
+    <div class="logo-mark">V</div>
+    <div>
+      <div class="header-title">VPM Drill</div>
+      <div class="header-sub">Vantage Positioning Manual</div>
+    </div>
+    <div class="header-right">
+      <button id="home-btn" onclick="goHome()">Home</button>
+    </div>
+  </div>
+  <div id="mode-tabs">
+    <button class="mode-tab" id="tab-recognition" onclick="switchMode('recognition')">Recognition</button>
+    <button class="mode-tab" id="tab-edit" onclick="switchMode('edit')">Edit</button>
+  </div>
+</header>
+
+<!-- ── SETUP NOTICE ─────────────────────────────────────────────────────────── -->
+<div id="setup-notice">
+  <strong>Setup required:</strong> Set your n8n webhook URL in the config at the top of <code>index.html</code>.
+  Replace <code>YOUR_N8N_WEBHOOK_URL</code> with the URL from your n8n Webhook node.
+</div>
+
+<main>
+
+  <!-- ── HOME SCREEN ────────────────────────────────────────────────────────── -->
+  <div id="home-screen">
+    <div class="upstream-box">
+      <div class="label label-slate">The Upstream (optional)</div>
+      <p class="hint-text">Paste today's concept, framework name, or reading topic. The drill engages with it — doesn't retell it.</p>
+      <textarea id="upstream-input" rows="2"
+        placeholder="e.g. Dunford's competitive alternatives, beachhead positioning, category reframing..."></textarea>
+    </div>
+
+    <div class="mode-grid">
+      <button class="mode-card" onclick="startMode('recognition')">
+        <div class="mode-card-title">Recognition</div>
+        <p class="mode-card-desc">A client scenario + discovery answers. Identify the deliverable, the strongest element, and the gap.</p>
+        <div class="mode-card-time">4 – 6 min</div>
+      </button>
+      <button class="mode-card" onclick="startMode('edit')">
+        <div class="mode-card-title">Edit</div>
+        <p class="mode-card-desc">A flawed positioning draft. Find the flaw. Rewrite it. Get scored against the framework.</p>
+        <div class="mode-card-time">3 – 5 min</div>
+      </button>
+    </div>
+
+    <p class="home-note">Each drill generates fresh. No two are the same.</p>
+  </div>
+
+  <!-- ── DRILL SCREEN ───────────────────────────────────────────────────────── -->
+  <div id="drill-screen">
+    <div id="spinner">
+      <div class="spin-ring"></div>
+      <div class="spin-label">Generating drill...</div>
+    </div>
+    <div id="drill-error" style="display:none; padding:16px 0;"></div>
+    <div id="drill-content"></div>
+  </div>
+
+</main>
+
+<script>
+// ── CONFIG — EDIT THIS ────────────────────────────────────────────────────────
+// Replace with your n8n webhook URL after setting up the webhook node.
+// e.g. "https://your-cloudflare-tunnel.domain.com/webhook/vpm-drill"
+const N8N_WEBHOOK_URL = "YOUR_N8N_WEBHOOK_URL";
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentMode = null;
+let currentDrill = null;
+let upstreamConcept = "";
+let showingHint = false;
+let evaluated = false;
+
+// ── READ URL PARAMS (Upstream auto-paste) ─────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const concept = params.get('concept');
+  if (concept) {
+    document.getElementById('upstream-input').value = decodeURIComponent(concept);
+  }
+  if (N8N_WEBHOOK_URL === "YOUR_N8N_WEBHOOK_URL") {
+    document.getElementById('setup-notice').style.display = 'block';
+  }
+});
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function goHome() {
+  currentMode = null;
+  currentDrill = null;
+  evaluated = false;
+  document.getElementById('home-screen').style.display = 'block';
+  document.getElementById('drill-screen').style.display = 'none';
+  document.getElementById('mode-tabs').style.display = 'none';
+  document.getElementById('home-btn').style.display = 'none';
+  document.getElementById('drill-content').innerHTML = '';
+  document.getElementById('drill-error').style.display = 'none';
+  document.getElementById('spinner').style.display = 'none';
+}
+
+function startMode(mode) {
+  upstreamConcept = document.getElementById('upstream-input').value.trim();
+  currentMode = mode;
+  evaluated = false;
+  document.getElementById('home-screen').style.display = 'none';
+  document.getElementById('drill-screen').style.display = 'block';
+  document.getElementById('mode-tabs').style.display = 'flex';
+  document.getElementById('home-btn').style.display = 'block';
+  document.getElementById('tab-recognition').classList.toggle('active', mode === 'recognition');
+  document.getElementById('tab-edit').classList.toggle('active', mode === 'edit');
+  generateDrill();
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  evaluated = false;
+  document.getElementById('tab-recognition').classList.toggle('active', mode === 'recognition');
+  document.getElementById('tab-edit').classList.toggle('active', mode === 'edit');
+  generateDrill();
+}
+
+// ── API CALL via n8n proxy ────────────────────────────────────────────────────
+async function callProxy(payload) {
+  const res = await fetch(N8N_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Webhook error ${res.status}: ${txt.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  // n8n returns the Claude response — handle both direct text and nested formats
+  if (typeof data === 'string') return data;
+  if (data.response) return data.response;
+  if (data.text) return data.text;
+  if (data.content) return data.content;
+  if (Array.isArray(data) && data[0]) {
+    const item = data[0];
+    if (item.response) return item.response;
+    if (item.text) return item.text;
+  }
+  return JSON.stringify(data);
+}
+
+// ── PROMPT BUILDERS ───────────────────────────────────────────────────────────
+const INDUSTRIES = [
+  "commercial cleaning company", "veterinary clinic", "independent insurance broker",
+  "residential remodeling contractor", "solo HR consultant", "specialty coffee roaster",
+  "physical therapy practice", "commercial photography studio", "bookkeeping firm serving restaurants",
+  "landscape design company", "IT support firm for medical offices", "estate planning attorney",
+  "craft brewery taproom", "mobile notary service", "commercial HVAC contractor",
+  "personal injury law firm", "executive career coaching practice", "residential solar installer",
+  "commercial pest control company", "pediatric dental practice"
+];
+
+const FLAW_TYPES = [
+  { type: "activity_not_outcome",      deliverable: "Core Value Proposition" },
+  { type: "too_broad_no_alternative",  deliverable: "Brand Positioning Statement" },
+  { type: "generic_claim_no_proof",    deliverable: "Key Message" },
+  { type: "buries_the_lead",           deliverable: "Elevator Pitch (30-second)" },
+  { type: "timeline_not_narrative",    deliverable: "Brand Story Narrative" },
+  { type: "missing_trigger",           deliverable: "Audience Persona" },
+  { type: "features_not_outcomes",     deliverable: "Homepage Headline" },
+  { type: "no_competitive_alternative",deliverable: "Brand Positioning Statement" },
+  { type: "sells_the_drill",           deliverable: "Core Value Proposition" },
+];
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function buildRecognitionPrompt() {
+  const industry = pick(INDUSTRIES);
+  const upstreamLine = upstreamConcept
+    ? `\n\nTHE UPSTREAM CONCEPT: The student read about "${upstreamConcept}" today. Weave this concept into the scenario so it's a relevant constraint — not an obvious answer. The student cannot solve the drill by simply applying the reading verbatim. They must use VPM judgment.`
+    : "";
+
+  return {
+    type: "generate_recognition",
+    system: getSystemPrompt(),
+    prompt: `Generate a RECOGNITION DRILL for a VPM student.
+
+INDUSTRY: ${industry}
+${upstreamLine}
+
+OUTPUT FORMAT — return exactly this structure, no preamble, no extra text:
+
+SCENARIO: [2–3 sentences. A real plateau-stage small business owner, 1–3 years in. Growth stalled. One specific detail that reveals a strategic problem. No solution hinted.]
+
+DISCOVERY_1: [Direct client quote. Reveals a hidden asset, real constraint, or unexamined assumption.]
+
+DISCOVERY_2: [Another client quote. Contradicts or complicates the first quote.]
+
+DISCOVERY_3: [A third client quote. Contains the most important strategic signal — but buried or understated.]
+
+STUDENT_PROMPT: [One sentence: identify the primary VPM deliverable this feeds, name the strongest strategic element, call out the most critical gap.]`
+  };
+}
+
+function buildEditPrompt() {
+  const flaw = pick(FLAW_TYPES);
+  const upstreamLine = upstreamConcept
+    ? `\n\nTHE UPSTREAM CONCEPT: "${upstreamConcept}" — the flaw should illustrate a mistake illuminated (not solved) by this concept. The student needs genuine VPM thinking, not recall of the reading.`
+    : "";
+
+  return {
+    type: "generate_edit",
+    system: getSystemPrompt(),
+    prompt: `Generate an EDIT DRILL for a VPM student.
+
+DELIVERABLE TYPE: ${flaw.deliverable}
+FLAW TYPE: ${flaw.type}
+${upstreamLine}
+
+Create a realistic flawed example a plateau-stage small business owner might actually write. Specific industry. The flaw should require VPM knowledge to catch — not obviously terrible.
+
+OUTPUT FORMAT — return exactly this structure, no preamble, no extra text:
+
+DELIVERABLE_LABEL: [The deliverable type + industry, e.g. "Core Value Proposition — HVAC Company"]
+
+FLAWED_ORIGINAL: [The flawed text. 1–3 sentences. Realistic. Specific industry. Flaw is present but not cartoonish.]
+
+FLAW_EXPLANATION: [1–2 sentences. Name exactly what is wrong and which VPM principle it violates. Direct.]
+
+HINT: [One question that nudges toward the fix without giving it away.]`
+  };
+}
+
+function buildEvalRecognitionPrompt(drill, answer) {
+  return {
+    type: "evaluate",
+    system: getSystemPrompt(),
+    prompt: `RECOGNITION DRILL EVALUATION
+
+SCENARIO: ${drill.scenario}
+DISCOVERY 1: ${drill.discoveries[0]}
+DISCOVERY 2: ${drill.discoveries[1]}
+DISCOVERY 3: ${drill.discoveries[2] || ''}
+STUDENT PROMPT: ${drill.studentPrompt}
+
+STUDENT RESPONSE:
+${answer}
+
+Score each (write exactly as shown):
+Framework (score: X/10): Did they identify the right deliverable(s)?
+Specificity (score: X/10): Did they name concrete elements, not generalities?
+Voice (score: X/10): Did they use precise non-generic language?
+Outcome (score: X/10): Did they identify the outcome-level opportunity?
+
+Then 2–3 sentences of direct coaching. What they got right first. What they missed. End with the single best strategic move for this client — one sentence, specific, actionable.
+
+Rules: Short declarative sentences. No hedging. No AI vocabulary. Flag any generic language in their answer.`
+  };
+}
+
+function buildEvalEditPrompt(drill, answer) {
+  return {
+    type: "evaluate",
+    system: getSystemPrompt(),
+    prompt: `EDIT DRILL EVALUATION
+
+DELIVERABLE: ${drill.label}
+KNOWN FLAW: ${drill.flaw}
+
+FLAWED ORIGINAL:
+"${drill.original}"
+
+STUDENT'S REWRITE:
+"${answer}"
+
+Score each (write exactly as shown):
+Framework (score: X/10): Did they fix the structural flaw?
+Specificity (score: X/10): Is the rewrite more specific than the original?
+Voice (score: X/10): Does it follow Vantage voice principles?
+Outcome (score: X/10): Does it lead with an outcome, not an activity?
+
+Then: What improved vs. the original (be specific). What's still soft. If they missed the core fix, write the ideal version in 1–2 sentences.
+
+Rules: Short declarative sentences. No hedging. No AI vocabulary. Flag any generic language kept.`
+  };
+}
+
+function getSystemPrompt() {
+  return `You are the VPM Evaluator — a direct, precise scoring engine trained on the Vantage Strategic Communications methodology.
+
+THE 15 DELIVERABLES:
+1. Brand Positioning Statement — Dunford 5+1. 12 words or fewer. No adjectives, no superlatives.
+2. Core Value Proposition — outcome not activity. Feature→Benefit→Outcome→Territory. Ownable.
+3. Key Messages (3–5) — mission first, product last.
+4. Elevator Pitch — 10s (WHO+WHAT), 30s (+diff), 60s (+proof+CTA). BLUF always.
+5. Audience Personas — behavioral TRIGGERS (why NOW). Champion persona primary.
+6. Audience-Specific Messaging — same positioning, different emphasis. Core VP never changes.
+7. Tone of Voice Guide — 3–5 traits, X-but-not-Y format.
+8. Sample Copy — consultants lead with philosophy; products lead with problem.
+9. Brand Story Narrative — Reluctant Founder / I Built It For Myself / Before-TurningPoint-After. Never a timeline.
+10. Competitive Positioning Summary — spectrum technique, category reframing.
+11. Full Competitive Audit — 3–5 competitors. End with ONE actionable recommendation.
+12. Internal Messaging Guide — Pocket Playbook. Scenario-organized, not theory.
+13. Implementation Strategy — Top 5 First. Internal before external. Left/Right Limits.
+14. Pitch Deck Narrative — Raskin: Big Shift→Winners/Losers→Promised Land→Magic Gifts→Evidence.
+15. Quarterly Messaging Audit — pass/fail. Brand drift detection.
+
+KEY FRAMEWORKS:
+Dunford: Start with competitive alternatives. Not the product.
+Raskin: Attack old mindset. Name a big shift. Never attack competitors directly.
+Enns: Expertise is the only valid differentiator.
+Stark LFPS: "I help [target] with [expensive problem]. Unlike competitors, [unique difference]." Outcome not activity.
+Baker: 10–200 competitors, 2,000–10,000 prospects.
+Morgan: Five paths — Vertical, Audience, Horizontal, Platform, Service. Beachhead = narrow first entry.
+
+VANTAGE VOICE RULES:
+No em dashes. No AI vocabulary (meticulous, elevate, robust, seamless, transformative, comprehensive, cutting-edge).
+Short declarative sentences. Specific over general. Dry humor only when earned.`;
+}
+
+// ── PARSERS ───────────────────────────────────────────────────────────────────
+function parseRecognition(text) {
+  function get(key) {
+    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z_]+:|$)`, 's'));
+    return m ? m[1].trim() : null;
+  }
+  return {
+    scenario:      get('SCENARIO'),
+    discoveries:   [get('DISCOVERY_1'), get('DISCOVERY_2'), get('DISCOVERY_3')].filter(Boolean),
+    studentPrompt: get('STUDENT_PROMPT')
+  };
+}
+
+function parseEdit(text) {
+  function get(key) {
+    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z_]+:|$)`, 's'));
+    return m ? m[1].trim() : null;
+  }
+  return {
+    label:    get('DELIVERABLE_LABEL'),
+    original: get('FLAWED_ORIGINAL'),
+    flaw:     get('FLAW_EXPLANATION'),
+    hint:     get('HINT')
+  };
+}
+
+function parseScores(text) {
+  const keys = ['Framework', 'Specificity', 'Voice', 'Outcome'];
+  const scores = {};
+  keys.forEach(k => {
+    const m = text.match(new RegExp(`${k}[^:]*score:\\s*(\\d+)/10`, 'i'));
+    if (m) scores[k] = parseInt(m[1]);
+  });
+  return scores;
+}
+
+function cleanEvalBody(text) {
+  return text
+    .replace(/Framework[^(]*\(score:\s*\d+\/10\)[^.\n]*/gi, '')
+    .replace(/Specificity[^(]*\(score:\s*\d+\/10\)[^.\n]*/gi, '')
+    .replace(/Voice[^(]*\(score:\s*\d+\/10\)[^.\n]*/gi, '')
+    .replace(/Outcome[^(]*\(score:\s*\d+\/10\)[^.\n]*/gi, '')
+    .replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// ── SCORE BAR HTML ────────────────────────────────────────────────────────────
+function scoreBarHTML(label, score) {
+  const color = score >= 8 ? 'var(--gold)' : score >= 5 ? 'var(--slate)' : 'var(--error)';
+  const pct = Math.min(100, score * 10);
+  return `
+    <div class="score-row">
+      <div class="score-label-row">
+        <span class="score-key">${label}</span>
+        <span class="score-val" style="color:${color}">${score}/10</span>
+      </div>
+      <div class="score-track">
+        <div class="score-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+    </div>`;
+}
+
+// ── GENERATE DRILL ────────────────────────────────────────────────────────────
+async function generateDrill() {
+  evaluated = false;
+  showingHint = false;
+  document.getElementById('drill-content').innerHTML = '';
+  document.getElementById('drill-error').style.display = 'none';
+  document.getElementById('spinner').style.display = 'block';
+
+  try {
+    const payload = currentMode === 'recognition' ? buildRecognitionPrompt() : buildEditPrompt();
+    const raw = await callProxy(payload);
+    currentDrill = currentMode === 'recognition' ? parseRecognition(raw) : parseEdit(raw);
+
+    if (!currentDrill || (currentMode === 'recognition' && !currentDrill.scenario) || (currentMode === 'edit' && !currentDrill.original)) {
+      throw new Error('Parse failed. Raw response: ' + raw.slice(0, 300));
+    }
+
+    document.getElementById('spinner').style.display = 'none';
+    renderDrill();
+  } catch (e) {
+    document.getElementById('spinner').style.display = 'none';
+    const box = document.getElementById('drill-error');
+    box.style.display = 'block';
+    box.innerHTML = `
+      <div class="error-box">
+        <div class="label label-error">Error</div>
+        <p class="error-text">${e.message}</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateDrill()">Retry</button>
+        <button class="btn btn-secondary" onclick="goHome()">Home</button>
+      </div>`;
+  }
+}
+
+// ── RENDER DRILL ──────────────────────────────────────────────────────────────
+function renderDrill() {
+  if (currentMode === 'recognition') renderRecognition();
+  else renderEdit();
+}
+
+function renderRecognition() {
+  const d = currentDrill;
+  const discoveryHTML = d.discoveries.map((disc, i) => `
+    <div class="discovery-item">
+      <div class="disc-num">${i+1}</div>
+      <p class="body-text">${disc}</p>
+    </div>`).join('');
+
+  document.getElementById('drill-content').innerHTML = `
+    <div class="card">
+      <div class="label">Client Scenario</div>
+      <p class="scenario-text">${d.scenario}</p>
+    </div>
+
+    <div class="card" style="border-left-color: var(--slate)">
+      <div class="label label-slate">Discovery Answers</div>
+      ${discoveryHTML}
+    </div>
+
+    ${d.studentPrompt ? `<div class="card-info"><p class="hint-text" style="margin:0">${d.studentPrompt}</p></div>` : ''}
+
+    <div style="margin-bottom:14px">
+      <div class="label label-slate">Your Read</div>
+      <textarea class="answer-area" id="answer-input" rows="5"
+        placeholder="Which deliverable does this feed? What's the strongest element? What's the critical gap?"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()">Submit</button>
+        <button class="btn btn-secondary" onclick="generateDrill()">New Scenario</button>
+      </div>
+      <p id="eval-error" style="color:var(--error);font-size:12px;margin-top:8px;display:none"></p>
+    </div>`;
+}
+
+function renderEdit() {
+  const d = currentDrill;
+  document.getElementById('drill-content').innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div class="label">${d.label || 'Edit Drill'}</div>
+        <div class="flaw-badge">Flaw Present</div>
+      </div>
+      <blockquote>${d.original}</blockquote>
+      <div>
+        <button class="btn-hint" onclick="toggleHint()">Show hint</button>
+        <p id="hint-reveal" style="color:var(--slate);font-size:13px;font-style:italic;margin-top:10px;line-height:1.6;display:none">${d.hint}</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div class="label label-slate">Your Rewrite</div>
+      <textarea class="answer-area" id="answer-input" rows="4"
+        placeholder="Rewrite it. Fix the flaw. Apply the framework."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()">Submit Rewrite</button>
+        <button class="btn btn-secondary" onclick="generateDrill()">New Draft</button>
+      </div>
+      <p id="eval-error" style="color:var(--error);font-size:12px;margin-top:8px;display:none"></p>
+    </div>`;
+}
+
+function toggleHint() {
+  showingHint = !showingHint;
+  const el = document.getElementById('hint-reveal');
+  const btn = document.querySelector('.btn-hint');
+  if (el) el.style.display = showingHint ? 'block' : 'none';
+  if (btn) btn.textContent = showingHint ? 'Hide hint' : 'Show hint';
+}
+
+// ── SUBMIT ANSWER ─────────────────────────────────────────────────────────────
+async function submitAnswer() {
+  const answer = document.getElementById('answer-input')?.value?.trim();
+  if (!answer) return;
+
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('eval-error');
+  btn.disabled = true;
+  btn.textContent = 'Evaluating...';
+  errEl.style.display = 'none';
+
+  try {
+    const payload = currentMode === 'recognition'
+      ? buildEvalRecognitionPrompt(currentDrill, answer)
+      : buildEvalEditPrompt(currentDrill, answer);
+
+    const raw = await callProxy(payload);
+    evaluated = true;
+    renderEvaluation(raw, answer);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = currentMode === 'recognition' ? 'Submit' : 'Submit Rewrite';
+    errEl.textContent = 'Error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+// ── RENDER EVALUATION ─────────────────────────────────────────────────────────
+function renderEvaluation(raw, answer) {
+  const scores = parseScores(raw);
+  const body = cleanEvalBody(raw);
+
+  const scoreHTML = Object.keys(scores).length
+    ? `<div style="margin-bottom:16px">${Object.entries(scores).map(([k,v]) => scoreBarHTML(k, v)).join('')}</div>`
+    : '';
+
+  const flawReveal = (currentMode === 'edit' && currentDrill.flaw)
+    ? `<div class="card-warn">
+        <div class="label">Original Flaw</div>
+        <p class="body-text" style="font-size:13px">${currentDrill.flaw}</p>
+       </div>`
+    : '';
+
+  const yourAnswer = currentMode === 'edit'
+    ? `<div class="card-slate">
+        <div class="label label-slate">Your Rewrite</div>
+        <p class="body-text" style="font-style:italic">"${answer}"</p>
+       </div>`
+    : '';
+
+  const evalCard = `
+    <div class="card-dark">
+      <div class="label">VPM Evaluation</div>
+      ${scoreHTML}
+      <p class="body-light">${body}</p>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-gold" onclick="generateDrill()">Next Drill</button>
+        <button class="btn btn-secondary" onclick="goHome()">Home</button>
+      </div>
+    </div>`;
+
+  // Hide the answer input area, show eval
+  const content = document.getElementById('drill-content');
+  // Remove the textarea section (last child)
+  const answerSection = content.querySelector('div[style*="margin-bottom:14px"]');
+  if (answerSection) answerSection.remove();
+
+  content.insertAdjacentHTML('beforeend', flawReveal + yourAnswer + evalCard);
+  window.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
