@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,1111 +32,1113 @@
     --purple: #9B6FFF;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    font-size: 13px;
-    line-height: 1.5;
-    overflow-x: hidden;
-  }
-
-  /* SCANLINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.03) 2px,
-      rgba(0,0,0,0.03) 4px
-    );
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  /* NOISE TEXTURE */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 24px;
-  }
-
-  /* ===== HEADER ===== */
-  .header {
-    position: relative;
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-  }
-
-  .program-tag {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--cyan);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .program-tag::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 1px;
-    background: var(--cyan);
-  }
-
-  .program-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: clamp(52px, 8vw, 88px);
-    font-weight: 900;
-    line-height: 0.88;
-    letter-spacing: -0.02em;
-    color: var(--text-bright);
-    text-transform: uppercase;
-  }
-
-  .program-title .accent {
-    color: var(--cyan);
-    -webkit-text-stroke: 1px var(--cyan);
-  }
-
-  .program-title .hollow {
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 1px var(--border-bright);
-    color: transparent;
-  }
-
-  .header-stats {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 16px;
-  }
-
-  .stat-block {
-    text-align: right;
-  }
-
-  .stat-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .stat-value {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--amber);
-    letter-spacing: 0.05em;
-  }
-
-  .header-sub {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .header-pill {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.12em;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .header-pill .dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--cyan-dim);
-  }
-
-  /* ===== BIG WHEEL VISUAL ===== */
-  .wheel-section {
-    margin-bottom: 48px;
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 32px;
-    align-items: center;
-  }
-
-  .wheel-wrap {
-    position: relative;
-  }
-
-  .wheel-wrap svg {
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.08));
-  }
-
-  .wheel-legend {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 24px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .legend-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-mid);
-    flex: 1;
-  }
-
-  .legend-week {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-  }
-
-  /* ===== WEEK TABS ===== */
-  .week-tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 32px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .week-tab {
-    padding: 12px 24px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    white-space: nowrap;
-  }
-
-  .week-tab:hover { color: var(--text-mid); }
-
-  .week-tab.active {
-    color: var(--text-bright);
-    border-bottom-color: var(--cyan);
-  }
-
-  .week-tab .week-theme {
-    font-size: 9px;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    color: inherit;
-    opacity: 0.6;
-  }
-
-  .week-tab.active .week-theme { color: var(--cyan); opacity: 1; }
-
-  /* ===== WEEK PANEL ===== */
-  .week-panel { display: none; }
-  .week-panel.active { display: block; }
-
-  .week-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    padding: 20px 24px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--cyan);
-  }
-
-  .week-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 32px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-bright);
-    line-height: 1;
-  }
-
-  .week-title span {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    color: var(--cyan);
-    display: block;
-    margin-bottom: 4px;
-    font-family: 'Share Tech Mono', monospace;
-  }
-
-  .week-prompt {
-    font-family: 'Barlow', sans-serif;
-    font-size: 13px;
-    font-style: italic;
-    color: var(--amber);
-    max-width: 280px;
-    text-align: right;
-    line-height: 1.6;
-  }
-
-  .week-prompt::before {
-    content: 'JOURNAL PROMPT —';
-    display: block;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    font-style: normal;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    margin-bottom: 4px;
-  }
-
-  /* ===== DAYS GRID ===== */
-  .days-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .day-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .day-card:hover { border-color: var(--border-bright); }
-
-  .day-card.rest {
-    opacity: 0.5;
-  }
-
-  .day-card.ride-only {
-    border-left: 3px solid var(--amber-dim);
-  }
-
-  .day-card.strength {
-    border-left: 3px solid var(--cyan-dim);
-  }
-
-  .day-card.strength.vo2 {
-    border-left: 3px solid var(--red-dim);
-  }
-
-  .day-card-head {
-    padding: 12px 14px 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .day-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-bright);
-  }
-
-  .day-type-badge {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 2px 6px;
-    border: 1px solid;
-  }
-
-  .day-type-badge.strength { color: var(--cyan); border-color: var(--cyan-dim); }
-  .day-type-badge.ride { color: var(--amber); border-color: var(--amber-dim); }
-  .day-type-badge.rest { color: var(--text-dim); border-color: var(--border); }
-  .day-type-badge.vo2 { color: var(--red); border-color: var(--red-dim); }
-
-  .day-card-body {
-    padding: 12px 14px;
-  }
-
-  .movement-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .movement-row:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
-  .mvmt-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    width: 60px;
-    flex-shrink: 0;
-  }
-
-  .mvmt-name {
-    font-family: 'Barlow', sans-serif;
-    font-size: 11px;
-    color: var(--text-mid);
-    line-height: 1.3;
-  }
-
-  .mvmt-sets {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-left: auto;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .cycling-row {
-    margin-top: 10px;
-    padding: 8px 10px;
-    background: rgba(255, 184, 0, 0.04);
-    border: 1px solid rgba(255, 184, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .cycling-zone {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px;
-    font-weight: 900;
-    color: var(--amber);
-    line-height: 1;
-  }
-
-  .cycling-info {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.08em;
-    line-height: 1.4;
-  }
-
-  .rest-content {
-    padding: 20px 14px;
-    text-align: center;
-  }
-
-  .rest-icon {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--border-bright);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-  }
-
-  .rest-text {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.12em;
-  }
-
-  /* ===== INTENSITY BAR ===== */
-  .intensity-section {
-    margin-bottom: 32px;
-    padding: 20px 24px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-  }
-
-  .section-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .intensity-bars {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-  }
-
-  .int-bar-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .int-bar-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .int-bar-track {
-    height: 4px;
-    background: var(--border);
-    position: relative;
-    overflow: visible;
-  }
-
-  .int-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
-    box-shadow: 0 0 8px var(--cyan-glow);
-    transition: width 0.6s ease;
-  }
-
-  .int-bar-fill.amber {
-    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
-    box-shadow: 0 0 8px var(--amber-glow);
-  }
-
-  .int-bar-fill.red {
-    background: linear-gradient(90deg, var(--red-dim), var(--red));
-    box-shadow: 0 0 8px rgba(255,58,58,0.3);
-  }
-
-  .int-bar-val {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  /* ===== CYCLING TABLE ===== */
-  .cycling-table {
-    margin-bottom: 32px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .ctable-row {
-    display: grid;
-    grid-template-columns: 100px 80px 120px 1fr 1fr;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .ctable-row:last-child { border-bottom: none; }
-
-  .ctable-row.header {
-    background: rgba(0,0,0,0.3);
-  }
-
-  .ctable-cell {
-    padding: 10px 16px;
-    border-right: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-mid);
-  }
-
-  .ctable-cell:last-child { border-right: none; }
-
-  .ctable-row.header .ctable-cell {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 8px 16px;
-  }
-
-  .zone-badge {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px;
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .zone-1 { color: var(--cyan); }
-  .zone-3 { color: var(--red); }
-
-  /* ===== OVERLOAD LOG ===== */
-  .log-section {
-    margin-bottom: 32px;
-  }
-
-  .log-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .log-row {
-    display: contents;
-  }
-
-  .log-head {
-    background: var(--dark);
-    padding: 8px 14px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 200px repeat(4, 1fr) 1fr;
-    gap: 2px;
-  }
-
-  .log-entry {
-    background: var(--panel);
-    padding: 10px 14px;
-    display: grid;
-    grid-template-columns: 200px repeat(4, 1fr) 1fr;
-    gap: 2px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .log-entry:hover { background: var(--dark); }
-
-  .log-entry:last-child { border-bottom: none; }
-
-  .log-exercise {
-    font-family: 'Barlow', sans-serif;
-    font-size: 12px;
-    color: var(--text-mid);
-    align-self: center;
-  }
-
-  .log-cell {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.1s;
-    min-height: 28px;
-  }
-
-  .log-cell:hover {
-    background: rgba(0,212,255,0.05);
-    border-color: var(--cyan-dim);
-    color: var(--cyan);
-  }
-
-  .log-cell.filled {
-    color: var(--text-bright);
-    border-color: var(--border-bright);
-    background: rgba(0,0,0,0.1);
-  }
-
-  .log-cell.pre-filled {
-    color: var(--amber);
-    border-color: var(--amber-dim);
-    background: var(--amber-glow);
-  }
-
-  /* ===== NUTRITION STRIP ===== */
-  .nutrition-strip {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 48px;
-  }
-
-  .nut-card {
-    padding: 20px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    position: relative;
-  }
-
-  .nut-day-type {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .nut-cal {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 36px;
-    font-weight: 900;
-    color: var(--text-bright);
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin-bottom: 12px;
-  }
-
-  .nut-cal span {
-    font-size: 14px;
-    color: var(--text-dim);
-    font-weight: 400;
-  }
-
-  .macro-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .macro-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .macro-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    width: 20px;
-  }
-
-  .macro-track {
-    flex: 1;
-    height: 3px;
-    background: var(--border);
-  }
-
-  .macro-fill {
-    height: 100%;
-  }
-
-  .macro-fill.protein { background: var(--cyan); }
-  .macro-fill.carbs { background: var(--amber); }
-  .macro-fill.fat { background: var(--purple); }
-
-  .macro-val {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-muted);
-    width: 38px;
-    text-align: right;
-  }
-
-  /* ===== MOBILITY GRID ===== */
-  .mobility-section {
-    margin-bottom: 48px;
-  }
-
-  .mobility-times {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-
-  .mob-time {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 20px;
-  }
-
-  .mob-time-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-bright);
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .mob-time-label span {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--cyan);
-    letter-spacing: 0.12em;
-    font-weight: 400;
-  }
-
-  .mob-exercise {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .mob-exercise:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-
-  .mob-num {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--cyan-dim);
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .mob-name {
-    font-size: 12px;
-    color: var(--text-mid);
-    flex: 1;
-    line-height: 1.4;
-  }
-
-  .mob-cue {
-    font-size: 10px;
-    color: var(--text-dim);
-    font-style: italic;
-    display: block;
-    margin-top: 2px;
-  }
-
-  .mob-reps {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  /* ===== MIND PROTOCOL ===== */
-  .mind-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 48px;
-  }
-
-  .mind-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 20px;
-  }
-
-  .mind-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--cyan);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .mind-title::before {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 6px;
-    background: var(--cyan);
-  }
-
-  .mind-body {
-    font-size: 12px;
-    color: var(--text-mid);
-    line-height: 1.7;
-  }
-
-  .breathing-visual {
-    display: flex;
-    gap: 4px;
-    margin: 12px 0;
-    align-items: center;
-  }
-
-  .breath-phase {
-    flex: 1;
-    text-align: center;
-    padding: 8px 4px;
-    border: 1px solid var(--border);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    position: relative;
-  }
-
-  .breath-phase.active {
-    background: var(--cyan-glow);
-    border-color: var(--cyan-dim);
-    color: var(--cyan);
-  }
-
-  .breath-count {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 20px;
-    font-weight: 400;
-    color: inherit;
-    display: block;
-    margin-bottom: 2px;
-  }
-
-  .breath-arrow {
-    color: var(--text-dim);
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  /* ===== PROGRAM RESET ===== */
-  .reset-section {
-    padding: 24px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--amber);
-    margin-bottom: 48px;
-  }
-
-  .reset-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: 16px;
-  }
-
-  .reset-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-  }
-
-  .reset-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border);
-  }
-
-  .reset-item-label {
-    font-family: 'Barlow', sans-serif;
-    font-size: 12px;
-    color: var(--text-mid);
-    flex: 1;
-    line-height: 1.4;
-  }
-
-  .reset-item-val {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--cyan);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  /* ===== FOOTER ===== */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding-top: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-tag {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-
-  /* ===== ANIMATIONS ===== */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .animate-in {
-    animation: fadeIn 0.3s ease forwards;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .live-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 2s infinite;
-    vertical-align: middle;
-    margin-right: 4px;
-  }
-
-  /* ===== LOG TABLE ===== */
-  .log-table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    margin-bottom: 32px;
-  }
-
-  .log-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-  }
-
-  .log-table th {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 10px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    background: rgba(0,0,0,0.3);
-    white-space: nowrap;
-  }
-
-  .log-table td {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-mid);
-    vertical-align: middle;
-  }
-
-  .log-table tr:last-child td { border-bottom: none; }
-
-  .log-table tr:hover td { background: rgba(255,255,255,0.01); }
-
-  .log-input {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    color: var(--text-bright);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    padding: 4px 8px;
-    width: 70px;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .log-input:focus {
-    border-color: var(--cyan-dim);
-    background: var(--cyan-glow);
-  }
-
-  .log-input::placeholder { color: var(--text-dim); }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: var(--dark); }
-  ::-webkit-scrollbar-thumb { background: var(--border-bright); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-
-  /* Responsive adjustments */
-  @media (max-width: 900px) {
-    .wheel-section { grid-template-columns: 1fr; }
-    .days-grid { grid-template-columns: repeat(2, 1fr); }
-    .ctable-row { grid-template-columns: 80px 60px 100px 1fr; }
-    .ctable-cell:last-child { display: none; }
-    .log-entry, .log-head { grid-template-columns: 160px repeat(4, 1fr); }
-  }
-
-  @media (max-width: 600px) {
-    .week-tabs { overflow-x: auto; }
-    .days-grid { grid-template-columns: 1fr; }
-    .nutrition-strip { grid-template-columns: 1fr; }
-    .mobility-times { grid-template-columns: 1fr; }
-    .mind-section { grid-template-columns: 1fr; }
-  }
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: var(–black);
+color: var(–text);
+font-family: ‘Barlow’, sans-serif;
+font-size: 13px;
+line-height: 1.5;
+overflow-x: hidden;
+}
+
+/* SCANLINE OVERLAY */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background: repeating-linear-gradient(
+0deg,
+transparent,
+transparent 2px,
+rgba(0,0,0,0.03) 2px,
+rgba(0,0,0,0.03) 4px
+);
+pointer-events: none;
+z-index: 1000;
+}
+
+/* NOISE TEXTURE */
+body::after {
+content: ‘’;
+position: fixed;
+inset: 0;
+opacity: 0.025;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 999;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 40px 24px;
+}
+
+/* ===== HEADER ===== */
+.header {
+position: relative;
+margin-bottom: 48px;
+padding-bottom: 32px;
+border-bottom: 1px solid var(–border);
+}
+
+.header-top {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 24px;
+}
+
+.program-tag {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–cyan);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.program-tag::before {
+content: ‘’;
+display: block;
+width: 24px;
+height: 1px;
+background: var(–cyan);
+}
+
+.program-title {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: clamp(52px, 8vw, 88px);
+font-weight: 900;
+line-height: 0.88;
+letter-spacing: -0.02em;
+color: var(–text-bright);
+text-transform: uppercase;
+}
+
+.program-title .accent {
+color: var(–cyan);
+-webkit-text-stroke: 1px var(–cyan);
+}
+
+.program-title .hollow {
+-webkit-text-fill-color: transparent;
+-webkit-text-stroke: 1px var(–border-bright);
+color: transparent;
+}
+
+.header-stats {
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 16px;
+}
+
+.stat-block {
+text-align: right;
+}
+
+.stat-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-bottom: 2px;
+}
+
+.stat-value {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 22px;
+font-weight: 700;
+color: var(–amber);
+letter-spacing: 0.05em;
+}
+
+.header-sub {
+display: flex;
+gap: 32px;
+flex-wrap: wrap;
+}
+
+.header-pill {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–text-muted);
+letter-spacing: 0.12em;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.header-pill .dot {
+width: 5px;
+height: 5px;
+border-radius: 50%;
+background: var(–cyan-dim);
+}
+
+/* ===== BIG WHEEL VISUAL ===== */
+.wheel-section {
+margin-bottom: 48px;
+display: grid;
+grid-template-columns: 360px 1fr;
+gap: 32px;
+align-items: center;
+}
+
+.wheel-wrap {
+position: relative;
+}
+
+.wheel-wrap svg {
+width: 100%;
+height: auto;
+filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.08));
+}
+
+.wheel-legend {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 6px 24px;
+}
+
+.legend-item {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 6px 0;
+border-bottom: 1px solid var(–border);
+}
+
+.legend-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+.legend-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 13px;
+font-weight: 600;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(–text-mid);
+flex: 1;
+}
+
+.legend-week {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+}
+
+/* ===== WEEK TABS ===== */
+.week-tabs {
+display: flex;
+gap: 0;
+margin-bottom: 32px;
+border-bottom: 1px solid var(–border);
+}
+
+.week-tab {
+padding: 12px 24px;
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–text-dim);
+cursor: pointer;
+border-bottom: 2px solid transparent;
+margin-bottom: -1px;
+transition: all 0.15s;
+display: flex;
+align-items: center;
+gap: 10px;
+white-space: nowrap;
+}
+
+.week-tab:hover { color: var(–text-mid); }
+
+.week-tab.active {
+color: var(–text-bright);
+border-bottom-color: var(–cyan);
+}
+
+.week-tab .week-theme {
+font-size: 9px;
+font-weight: 400;
+letter-spacing: 0.15em;
+color: inherit;
+opacity: 0.6;
+}
+
+.week-tab.active .week-theme { color: var(–cyan); opacity: 1; }
+
+/* ===== WEEK PANEL ===== */
+.week-panel { display: none; }
+.week-panel.active { display: block; }
+
+.week-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 24px;
+padding: 20px 24px;
+background: var(–panel);
+border: 1px solid var(–border);
+border-left: 3px solid var(–cyan);
+}
+
+.week-title {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 32px;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+color: var(–text-bright);
+line-height: 1;
+}
+
+.week-title span {
+font-size: 13px;
+font-weight: 400;
+letter-spacing: 0.2em;
+color: var(–cyan);
+display: block;
+margin-bottom: 4px;
+font-family: ‘Share Tech Mono’, monospace;
+}
+
+.week-prompt {
+font-family: ‘Barlow’, sans-serif;
+font-size: 13px;
+font-style: italic;
+color: var(–amber);
+max-width: 280px;
+text-align: right;
+line-height: 1.6;
+}
+
+.week-prompt::before {
+content: ‘JOURNAL PROMPT —’;
+display: block;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+font-style: normal;
+color: var(–text-dim);
+letter-spacing: 0.15em;
+margin-bottom: 4px;
+}
+
+/* ===== DAYS GRID ===== */
+.days-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 12px;
+margin-bottom: 32px;
+}
+
+.day-card {
+background: var(–panel);
+border: 1px solid var(–border);
+position: relative;
+overflow: hidden;
+transition: border-color 0.2s;
+}
+
+.day-card:hover { border-color: var(–border-bright); }
+
+.day-card.rest {
+opacity: 0.5;
+}
+
+.day-card.ride-only {
+border-left: 3px solid var(–amber-dim);
+}
+
+.day-card.strength {
+border-left: 3px solid var(–cyan-dim);
+}
+
+.day-card.strength.vo2 {
+border-left: 3px solid var(–red-dim);
+}
+
+.day-card-head {
+padding: 12px 14px 10px;
+border-bottom: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.day-name {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 16px;
+font-weight: 800;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-bright);
+}
+
+.day-type-badge {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 8px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+padding: 2px 6px;
+border: 1px solid;
+}
+
+.day-type-badge.strength { color: var(–cyan); border-color: var(–cyan-dim); }
+.day-type-badge.ride { color: var(–amber); border-color: var(–amber-dim); }
+.day-type-badge.rest { color: var(–text-dim); border-color: var(–border); }
+.day-type-badge.vo2 { color: var(–red); border-color: var(–red-dim); }
+
+.day-card-body {
+padding: 12px 14px;
+}
+
+.movement-row {
+display: flex;
+align-items: baseline;
+gap: 6px;
+margin-bottom: 6px;
+padding-bottom: 6px;
+border-bottom: 1px solid var(–border);
+}
+
+.movement-row:last-child {
+margin-bottom: 0;
+padding-bottom: 0;
+border-bottom: none;
+}
+
+.mvmt-tag {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 9px;
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-dim);
+width: 60px;
+flex-shrink: 0;
+}
+
+.mvmt-name {
+font-family: ‘Barlow’, sans-serif;
+font-size: 11px;
+color: var(–text-mid);
+line-height: 1.3;
+}
+
+.mvmt-sets {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–text-dim);
+margin-left: auto;
+white-space: nowrap;
+flex-shrink: 0;
+}
+
+.cycling-row {
+margin-top: 10px;
+padding: 8px 10px;
+background: rgba(255, 184, 0, 0.04);
+border: 1px solid rgba(255, 184, 0, 0.1);
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.cycling-zone {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 18px;
+font-weight: 900;
+color: var(–amber);
+line-height: 1;
+}
+
+.cycling-info {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.08em;
+line-height: 1.4;
+}
+
+.rest-content {
+padding: 20px 14px;
+text-align: center;
+}
+
+.rest-icon {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 28px;
+font-weight: 900;
+color: var(–border-bright);
+letter-spacing: 0.1em;
+margin-bottom: 6px;
+}
+
+.rest-text {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.12em;
+}
+
+/* ===== INTENSITY BAR ===== */
+.intensity-section {
+margin-bottom: 32px;
+padding: 20px 24px;
+background: var(–panel);
+border: 1px solid var(–border);
+}
+
+.section-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.section-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+.intensity-bars {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 8px;
+}
+
+.int-bar-wrap {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.int-bar-label {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-muted);
+}
+
+.int-bar-track {
+height: 4px;
+background: var(–border);
+position: relative;
+overflow: visible;
+}
+
+.int-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–cyan-dim), var(–cyan));
+box-shadow: 0 0 8px var(–cyan-glow);
+transition: width 0.6s ease;
+}
+
+.int-bar-fill.amber {
+background: linear-gradient(90deg, var(–amber-dim), var(–amber));
+box-shadow: 0 0 8px var(–amber-glow);
+}
+
+.int-bar-fill.red {
+background: linear-gradient(90deg, var(–red-dim), var(–red));
+box-shadow: 0 0 8px rgba(255,58,58,0.3);
+}
+
+.int-bar-val {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+margin-top: 2px;
+}
+
+/* ===== CYCLING TABLE ===== */
+.cycling-table {
+margin-bottom: 32px;
+border: 1px solid var(–border);
+overflow: hidden;
+}
+
+.ctable-row {
+display: grid;
+grid-template-columns: 100px 80px 120px 1fr 1fr;
+border-bottom: 1px solid var(–border);
+}
+
+.ctable-row:last-child { border-bottom: none; }
+
+.ctable-row.header {
+background: rgba(0,0,0,0.3);
+}
+
+.ctable-cell {
+padding: 10px 16px;
+border-right: 1px solid var(–border);
+font-size: 12px;
+color: var(–text-mid);
+}
+
+.ctable-cell:last-child { border-right: none; }
+
+.ctable-row.header .ctable-cell {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.12em;
+text-transform: uppercase;
+padding: 8px 16px;
+}
+
+.zone-badge {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 18px;
+font-weight: 900;
+line-height: 1;
+}
+
+.zone-1 { color: var(–cyan); }
+.zone-3 { color: var(–red); }
+
+/* ===== OVERLOAD LOG ===== */
+.log-section {
+margin-bottom: 32px;
+}
+
+.log-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 2px;
+border: 1px solid var(–border);
+overflow: hidden;
+}
+
+.log-row {
+display: contents;
+}
+
+.log-head {
+background: var(–dark);
+padding: 8px 14px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+border-bottom: 1px solid var(–border);
+grid-column: 1 / -1;
+display: grid;
+grid-template-columns: 200px repeat(4, 1fr) 1fr;
+gap: 2px;
+}
+
+.log-entry {
+background: var(–panel);
+padding: 10px 14px;
+display: grid;
+grid-template-columns: 200px repeat(4, 1fr) 1fr;
+gap: 2px;
+border-bottom: 1px solid var(–border);
+}
+
+.log-entry:hover { background: var(–dark); }
+
+.log-entry:last-child { border-bottom: none; }
+
+.log-exercise {
+font-family: ‘Barlow’, sans-serif;
+font-size: 12px;
+color: var(–text-mid);
+align-self: center;
+}
+
+.log-cell {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–text-dim);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 4px 8px;
+background: rgba(0,0,0,0.2);
+border: 1px solid var(–border);
+cursor: pointer;
+transition: all 0.1s;
+min-height: 28px;
+}
+
+.log-cell:hover {
+background: rgba(0,212,255,0.05);
+border-color: var(–cyan-dim);
+color: var(–cyan);
+}
+
+.log-cell.filled {
+color: var(–text-bright);
+border-color: var(–border-bright);
+background: rgba(0,0,0,0.1);
+}
+
+.log-cell.pre-filled {
+color: var(–amber);
+border-color: var(–amber-dim);
+background: var(–amber-glow);
+}
+
+/* ===== NUTRITION STRIP ===== */
+.nutrition-strip {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+margin-bottom: 48px;
+}
+
+.nut-card {
+padding: 20px;
+background: var(–panel);
+border: 1px solid var(–border);
+position: relative;
+}
+
+.nut-day-type {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-bottom: 12px;
+}
+
+.nut-cal {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 36px;
+font-weight: 900;
+color: var(–text-bright);
+letter-spacing: -0.02em;
+line-height: 1;
+margin-bottom: 12px;
+}
+
+.nut-cal span {
+font-size: 14px;
+color: var(–text-dim);
+font-weight: 400;
+}
+
+.macro-bars {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.macro-row {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.macro-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.1em;
+width: 20px;
+}
+
+.macro-track {
+flex: 1;
+height: 3px;
+background: var(–border);
+}
+
+.macro-fill {
+height: 100%;
+}
+
+.macro-fill.protein { background: var(–cyan); }
+.macro-fill.carbs { background: var(–amber); }
+.macro-fill.fat { background: var(–purple); }
+
+.macro-val {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-muted);
+width: 38px;
+text-align: right;
+}
+
+/* ===== MOBILITY GRID ===== */
+.mobility-section {
+margin-bottom: 48px;
+}
+
+.mobility-times {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 16px;
+}
+
+.mob-time {
+background: var(–panel);
+border: 1px solid var(–border);
+padding: 20px;
+}
+
+.mob-time-label {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 20px;
+font-weight: 800;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–text-bright);
+margin-bottom: 14px;
+padding-bottom: 10px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.mob-time-label span {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–cyan);
+letter-spacing: 0.12em;
+font-weight: 400;
+}
+
+.mob-exercise {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin-bottom: 10px;
+padding-bottom: 10px;
+border-bottom: 1px solid var(–border);
+}
+
+.mob-exercise:last-child {
+margin-bottom: 0;
+padding-bottom: 0;
+border-bottom: none;
+}
+
+.mob-num {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–cyan-dim);
+flex-shrink: 0;
+margin-top: 2px;
+}
+
+.mob-name {
+font-size: 12px;
+color: var(–text-mid);
+flex: 1;
+line-height: 1.4;
+}
+
+.mob-cue {
+font-size: 10px;
+color: var(–text-dim);
+font-style: italic;
+display: block;
+margin-top: 2px;
+}
+
+.mob-reps {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+flex-shrink: 0;
+margin-top: 2px;
+}
+
+/* ===== MIND PROTOCOL ===== */
+.mind-section {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 16px;
+margin-bottom: 48px;
+}
+
+.mind-card {
+background: var(–panel);
+border: 1px solid var(–border);
+padding: 20px;
+}
+
+.mind-title {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–cyan);
+margin-bottom: 12px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.mind-title::before {
+content: ‘’;
+display: block;
+width: 6px;
+height: 6px;
+background: var(–cyan);
+}
+
+.mind-body {
+font-size: 12px;
+color: var(–text-mid);
+line-height: 1.7;
+}
+
+.breathing-visual {
+display: flex;
+gap: 4px;
+margin: 12px 0;
+align-items: center;
+}
+
+.breath-phase {
+flex: 1;
+text-align: center;
+padding: 8px 4px;
+border: 1px solid var(–border);
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(–text-dim);
+position: relative;
+}
+
+.breath-phase.active {
+background: var(–cyan-glow);
+border-color: var(–cyan-dim);
+color: var(–cyan);
+}
+
+.breath-count {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 20px;
+font-weight: 400;
+color: inherit;
+display: block;
+margin-bottom: 2px;
+}
+
+.breath-arrow {
+color: var(–text-dim);
+font-size: 12px;
+flex-shrink: 0;
+}
+
+/* ===== PROGRAM RESET ===== */
+.reset-section {
+padding: 24px;
+background: var(–panel);
+border: 1px solid var(–border);
+border-top: 3px solid var(–amber);
+margin-bottom: 48px;
+}
+
+.reset-title {
+font-family: ‘Barlow Condensed’, sans-serif;
+font-size: 22px;
+font-weight: 900;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–amber);
+margin-bottom: 16px;
+}
+
+.reset-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 10px;
+}
+
+.reset-item {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+padding: 10px 12px;
+background: rgba(0,0,0,0.2);
+border: 1px solid var(–border);
+}
+
+.reset-item-label {
+font-family: ‘Barlow’, sans-serif;
+font-size: 12px;
+color: var(–text-mid);
+flex: 1;
+line-height: 1.4;
+}
+
+.reset-item-val {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–cyan);
+white-space: nowrap;
+flex-shrink: 0;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+border-top: 1px solid var(–border);
+padding-top: 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.footer-tag {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes pulse-dot {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.3; }
+}
+
+.live-dot {
+display: inline-block;
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(–green);
+animation: pulse-dot 2s infinite;
+vertical-align: middle;
+margin-right: 4px;
+}
+
+/* ===== LOG TABLE ===== */
+.log-table-wrap {
+overflow-x: auto;
+border: 1px solid var(–border);
+margin-bottom: 32px;
+}
+
+.log-table {
+width: 100%;
+border-collapse: collapse;
+min-width: 700px;
+}
+
+.log-table th {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+letter-spacing: 0.12em;
+text-transform: uppercase;
+padding: 10px 16px;
+text-align: left;
+border-bottom: 1px solid var(–border);
+background: rgba(0,0,0,0.3);
+white-space: nowrap;
+}
+
+.log-table td {
+padding: 10px 16px;
+border-bottom: 1px solid var(–border);
+font-size: 12px;
+color: var(–text-mid);
+vertical-align: middle;
+}
+
+.log-table tr:last-child td { border-bottom: none; }
+
+.log-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+.log-input {
+background: rgba(0,0,0,0.3);
+border: 1px solid var(–border);
+color: var(–text-bright);
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+padding: 4px 8px;
+width: 70px;
+text-align: center;
+outline: none;
+transition: border-color 0.15s;
+}
+
+.log-input:focus {
+border-color: var(–cyan-dim);
+background: var(–cyan-glow);
+}
+
+.log-input::placeholder { color: var(–text-dim); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(–dark); }
+::-webkit-scrollbar-thumb { background: var(–border-bright); }
+::-webkit-scrollbar-thumb:hover { background: var(–text-dim); }
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+.wheel-section { grid-template-columns: 1fr; }
+.days-grid { grid-template-columns: repeat(2, 1fr); }
+.ctable-row { grid-template-columns: 80px 60px 100px 1fr; }
+.ctable-cell:last-child { display: none; }
+.log-entry, .log-head { grid-template-columns: 160px repeat(4, 1fr); }
+}
+
+@media (max-width: 600px) {
+.week-tabs { overflow-x: auto; }
+.days-grid { grid-template-columns: 1fr; }
+.nutrition-strip { grid-template-columns: 1fr; }
+.mobility-times { grid-template-columns: 1fr; }
+.mind-section { grid-template-columns: 1fr; }
+}
 </style>
+
 </head>
 <body>
 <div class="container">
 
   <!-- HEADER -->
+
   <div class="header">
     <div class="header-top">
       <div>
@@ -1171,6 +1174,7 @@
   </div>
 
   <!-- BLOCK ORDER STRIP -->
+
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-bottom:48px;font-family:'Barlow Condensed',sans-serif;">
     <div style="background:var(--panel);border:1px solid var(--border);padding:14px 16px;text-align:center;">
       <div style="font-size:22px;font-weight:900;color:var(--cyan);line-height:1;">5</div>
@@ -1186,6 +1190,7 @@
       <div style="font-size:22px;font-weight:900;color:var(--cyan);line-height:1;">37</div>
       <div style="font-size:9px;font-family:'Share Tech Mono',monospace;color:var(--text-dim);letter-spacing:.12em;margin-top:4px;">MIN</div>
       <div style="font-size:13px;font-weight:700;color:var(--cyan);letter-spacing:.08em;text-transform:uppercase;margin-top:6px;">Strength</div>
+      <div style="font-size:8px;font-family:'Share Tech Mono',monospace;color:var(--cyan-dim);letter-spacing:.08em;margin-top:6px;line-height:1.5;">2–3 MIN REST<br>COMPOUNDS<br>60–90 SEC<br>ACCESSORIES</div>
     </div>
     <div style="background:rgba(255,184,0,.04);border:1px solid var(--amber-dim);padding:14px 16px;text-align:center;">
       <div style="font-size:22px;font-weight:900;color:var(--amber);line-height:1;">35</div>
@@ -1200,6 +1205,7 @@
   </div>
 
   <!-- WHEEL SVG -->
+
   <div class="wheel-section">
     <div class="wheel-wrap">
       <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
@@ -1214,142 +1220,146 @@
           </filter>
         </defs>
 
-        <!-- Background rings -->
-        <circle cx="180" cy="180" r="160" fill="none" stroke="#1E2830" stroke-width="0.5"/>
-        <circle cx="180" cy="180" r="120" fill="none" stroke="#1E2830" stroke-width="0.5"/>
-        <circle cx="180" cy="180" r="80" fill="none" stroke="#1E2830" stroke-width="0.5"/>
-        <circle cx="180" cy="180" r="40" fill="none" stroke="#1E2830" stroke-width="0.5"/>
+```
+    <!-- Background rings -->
+    <circle cx="180" cy="180" r="160" fill="none" stroke="#1E2830" stroke-width="0.5"/>
+    <circle cx="180" cy="180" r="120" fill="none" stroke="#1E2830" stroke-width="0.5"/>
+    <circle cx="180" cy="180" r="80" fill="none" stroke="#1E2830" stroke-width="0.5"/>
+    <circle cx="180" cy="180" r="40" fill="none" stroke="#1E2830" stroke-width="0.5"/>
 
-        <!-- Spoke lines for 12 segments -->
-        <g stroke="#1E2830" stroke-width="0.5">
-          <line x1="180" y1="20" x2="180" y2="340"/>
-          <line x1="20" y1="180" x2="340" y2="180"/>
-          <line x1="62.5" y1="62.5" x2="297.5" y2="297.5"/>
-          <line x1="297.5" y1="62.5" x2="62.5" y2="297.5"/>
-          <line x1="110" y1="32" x2="250" y2="328"/>
-          <line x1="32" y1="110" x2="328" y2="250"/>
-          <line x1="250" y1="32" x2="110" y2="328"/>
-          <line x1="328" y1="110" x2="32" y2="250"/>
-          <line x1="138" y1="24" x2="222" y2="336"/>
-          <line x1="24" y1="138" x2="336" y2="222"/>
-          <line x1="222" y1="24" x2="138" y2="336"/>
-          <line x1="336" y1="138" x2="24" y2="222"/>
-        </g>
+    <!-- Spoke lines for 12 segments -->
+    <g stroke="#1E2830" stroke-width="0.5">
+      <line x1="180" y1="20" x2="180" y2="340"/>
+      <line x1="20" y1="180" x2="340" y2="180"/>
+      <line x1="62.5" y1="62.5" x2="297.5" y2="297.5"/>
+      <line x1="297.5" y1="62.5" x2="62.5" y2="297.5"/>
+      <line x1="110" y1="32" x2="250" y2="328"/>
+      <line x1="32" y1="110" x2="328" y2="250"/>
+      <line x1="250" y1="32" x2="110" y2="328"/>
+      <line x1="328" y1="110" x2="32" y2="250"/>
+      <line x1="138" y1="24" x2="222" y2="336"/>
+      <line x1="24" y1="138" x2="336" y2="222"/>
+      <line x1="222" y1="24" x2="138" y2="336"/>
+      <line x1="336" y1="138" x2="24" y2="222"/>
+    </g>
 
-        <!-- OUTER RING: Physical patterns — WEEK 1 arcs (cyan, partial) -->
-        <!-- Push W1 -->
-        <path d="M 180 20 A 160 160 0 0 1 220 23" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.9" filter="url(#glow-cyan)"/>
-        <!-- Pull W1 -->
-        <path d="M 220 23 A 160 160 0 0 1 257 38" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.7"/>
-        <!-- Hinge W1 -->
-        <path d="M 257 38 A 160 160 0 0 1 285 60" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.5"/>
-        <!-- Squat W1 -->
-        <path d="M 285 60 A 160 160 0 0 1 305 88" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.4"/>
+    <!-- OUTER RING: Physical patterns — WEEK 1 arcs (cyan, partial) -->
+    <!-- Push W1 -->
+    <path d="M 180 20 A 160 160 0 0 1 220 23" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.9" filter="url(#glow-cyan)"/>
+    <!-- Pull W1 -->
+    <path d="M 220 23 A 160 160 0 0 1 257 38" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.7"/>
+    <!-- Hinge W1 -->
+    <path d="M 257 38 A 160 160 0 0 1 285 60" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.5"/>
+    <!-- Squat W1 -->
+    <path d="M 285 60 A 160 160 0 0 1 305 88" fill="none" stroke="#00D4FF" stroke-width="8" opacity="0.4"/>
 
-        <!-- Mobility — full ring (always covered) -->
-        <circle cx="180" cy="180" r="40" fill="none" stroke="#00D4FF" stroke-width="3" opacity="0.25" filter="url(#glow-cyan)"/>
+    <!-- Mobility — full ring (always covered) -->
+    <circle cx="180" cy="180" r="40" fill="none" stroke="#00D4FF" stroke-width="3" opacity="0.25" filter="url(#glow-cyan)"/>
 
-        <!-- W3 coverage arcs — outer ring filled more -->
-        <path d="M 180 20 A 160 160 0 1 1 179.9 20" fill="none" stroke="#00D4FF" stroke-width="2" opacity="0.08"/>
+    <!-- W3 coverage arcs — outer ring filled more -->
+    <path d="M 180 20 A 160 160 0 1 1 179.9 20" fill="none" stroke="#00D4FF" stroke-width="2" opacity="0.08"/>
 
-        <!-- MIDDLE RING: Week progression fills -->
-        <path d="M 180 60 A 120 120 0 0 1 274 90" fill="none" stroke="#00AACC" stroke-width="6" opacity="0.6"/>
-        <path d="M 274 90 A 120 120 0 0 1 300 180" fill="none" stroke="#00AACC" stroke-width="6" opacity="0.4"/>
-        <path d="M 300 180 A 120 120 0 0 1 274 270" fill="none" stroke="#FFB800" stroke-width="6" opacity="0.4"/>
-        <path d="M 274 270 A 120 120 0 0 1 180 300" fill="none" stroke="#FFB800" stroke-width="6" opacity="0.3"/>
+    <!-- MIDDLE RING: Week progression fills -->
+    <path d="M 180 60 A 120 120 0 0 1 274 90" fill="none" stroke="#00AACC" stroke-width="6" opacity="0.6"/>
+    <path d="M 274 90 A 120 120 0 0 1 300 180" fill="none" stroke="#00AACC" stroke-width="6" opacity="0.4"/>
+    <path d="M 300 180 A 120 120 0 0 1 274 270" fill="none" stroke="#FFB800" stroke-width="6" opacity="0.4"/>
+    <path d="M 274 270 A 120 120 0 0 1 180 300" fill="none" stroke="#FFB800" stroke-width="6" opacity="0.3"/>
 
-        <!-- INNER RING: Mental/Endurance (full, always) -->
-        <circle cx="180" cy="180" r="80" fill="none" stroke="#FFB800" stroke-width="2" opacity="0.2" filter="url(#glow-amber)"/>
-        <circle cx="180" cy="180" r="80" fill="none" stroke="#FFB800" stroke-width="8" stroke-dasharray="8 4" opacity="0.15"/>
+    <!-- INNER RING: Mental/Endurance (full, always) -->
+    <circle cx="180" cy="180" r="80" fill="none" stroke="#FFB800" stroke-width="2" opacity="0.2" filter="url(#glow-amber)"/>
+    <circle cx="180" cy="180" r="80" fill="none" stroke="#FFB800" stroke-width="8" stroke-dasharray="8 4" opacity="0.15"/>
 
-        <!-- Center pulse -->
-        <circle cx="180" cy="180" r="16" fill="#0E1215" stroke="#1E2830" stroke-width="1"/>
-        <circle cx="180" cy="180" r="8" fill="#00D4FF" opacity="0.3"/>
-        <circle cx="180" cy="180" r="4" fill="#00D4FF" opacity="0.8"/>
+    <!-- Center pulse -->
+    <circle cx="180" cy="180" r="16" fill="#0E1215" stroke="#1E2830" stroke-width="1"/>
+    <circle cx="180" cy="180" r="8" fill="#00D4FF" opacity="0.3"/>
+    <circle cx="180" cy="180" r="4" fill="#00D4FF" opacity="0.8"/>
 
-        <!-- Labels -->
-        <text x="180" y="12" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">PUSH</text>
-        <text x="325" y="75" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">PULL</text>
-        <text x="355" y="185" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">HINGE</text>
-        <text x="340" y="300" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">SQUAT</text>
-        <text x="220" y="358" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">LUNGE</text>
-        <text x="130" y="358" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">LOCO</text>
-        <text x="25" y="300" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">POWER</text>
-        <text x="8" y="185" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">ROT</text>
-        <text x="22" y="75" fill="#3D5060" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">AGIL</text>
-        <text x="180" y="68" fill="#FFB800" font-family="Barlow Condensed, sans-serif" font-size="8" font-weight="600" text-anchor="middle" letter-spacing="1" opacity="0.7">STRENGTH</text>
-        <text x="180" y="100" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="7" font-weight="600" text-anchor="middle" letter-spacing="1">ENDURANCE</text>
-        <text x="180" y="200" fill="#3D5060" font-family="Barlow Condensed, sans-serif" font-size="7" font-weight="600" text-anchor="middle" letter-spacing="1">MOBILITY</text>
-      </svg>
+    <!-- Labels -->
+    <text x="180" y="12" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">PUSH</text>
+    <text x="325" y="75" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">PULL</text>
+    <text x="355" y="185" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">HINGE</text>
+    <text x="340" y="300" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">SQUAT</text>
+    <text x="220" y="358" fill="#8AA0B0" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">LUNGE</text>
+    <text x="130" y="358" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">LOCO</text>
+    <text x="25" y="300" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">POWER</text>
+    <text x="8" y="185" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">ROT</text>
+    <text x="22" y="75" fill="#3D5060" font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="2">AGIL</text>
+    <text x="180" y="68" fill="#FFB800" font-family="Barlow Condensed, sans-serif" font-size="8" font-weight="600" text-anchor="middle" letter-spacing="1" opacity="0.7">STRENGTH</text>
+    <text x="180" y="100" fill="#5A7080" font-family="Barlow Condensed, sans-serif" font-size="7" font-weight="600" text-anchor="middle" letter-spacing="1">ENDURANCE</text>
+    <text x="180" y="200" fill="#3D5060" font-family="Barlow Condensed, sans-serif" font-size="7" font-weight="600" text-anchor="middle" letter-spacing="1">MOBILITY</text>
+  </svg>
+</div>
+<div>
+  <div class="section-label">Full Wheel Coverage — 4-Week Arc</div>
+  <div class="wheel-legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      <div class="legend-name">Push</div>
+      <div class="legend-week">W1–W4</div>
     </div>
-    <div>
-      <div class="section-label">Full Wheel Coverage — 4-Week Arc</div>
-      <div class="wheel-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan)"></div>
-          <div class="legend-name">Push</div>
-          <div class="legend-week">W1–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan)"></div>
-          <div class="legend-name">Pull</div>
-          <div class="legend-week">W1–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan)"></div>
-          <div class="legend-name">Hinge</div>
-          <div class="legend-week">W1–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan)"></div>
-          <div class="legend-name">Squat</div>
-          <div class="legend-week">W1–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan-dim)"></div>
-          <div class="legend-name">Lunge</div>
-          <div class="legend-week">W2–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan-dim)"></div>
-          <div class="legend-name">Locomotion</div>
-          <div class="legend-week">W2–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--cyan-dim)"></div>
-          <div class="legend-name">Power</div>
-          <div class="legend-week">W2–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--purple)"></div>
-          <div class="legend-name">Rotate</div>
-          <div class="legend-week">W3–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--purple)"></div>
-          <div class="legend-name">Agility</div>
-          <div class="legend-week">W3–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--amber)"></div>
-          <div class="legend-name">Endurance</div>
-          <div class="legend-week">W1–W4</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--amber)"></div>
-          <div class="legend-name">Mobility</div>
-          <div class="legend-week">Daily</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--green)"></div>
-          <div class="legend-name">Mental / Spiritual</div>
-          <div class="legend-week">Daily</div>
-        </div>
-      </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      <div class="legend-name">Pull</div>
+      <div class="legend-week">W1–W4</div>
     </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      <div class="legend-name">Hinge</div>
+      <div class="legend-week">W1–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      <div class="legend-name">Squat</div>
+      <div class="legend-week">W1–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan-dim)"></div>
+      <div class="legend-name">Lunge</div>
+      <div class="legend-week">W2–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan-dim)"></div>
+      <div class="legend-name">Locomotion</div>
+      <div class="legend-week">W2–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan-dim)"></div>
+      <div class="legend-name">Power</div>
+      <div class="legend-week">W2–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--purple)"></div>
+      <div class="legend-name">Rotate</div>
+      <div class="legend-week">W3–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--purple)"></div>
+      <div class="legend-name">Agility</div>
+      <div class="legend-week">W3–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--amber)"></div>
+      <div class="legend-name">Endurance</div>
+      <div class="legend-week">W1–W4</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--amber)"></div>
+      <div class="legend-name">Mobility</div>
+      <div class="legend-week">Daily</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--green)"></div>
+      <div class="legend-name">Mental / Spiritual</div>
+      <div class="legend-week">Daily</div>
+    </div>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- WEEK TABS -->
+
   <div class="week-tabs">
     <div class="week-tab active" onclick="showWeek(1,this)">
       WEEK 1 <span class="week-theme">FOUNDATION · BUILD</span>
@@ -1366,6 +1376,7 @@
   </div>
 
   <!-- WEEK 1 -->
+
   <div class="week-panel active" id="week-1">
     <div class="week-header">
       <div class="week-title">
@@ -1494,40 +1505,44 @@
       </div>
     </div>
 
-    <!-- INTENSITY BAR -->
-    <div class="intensity-section">
-      <div class="section-label">Weekly Load Profile</div>
-      <div class="intensity-bars">
-        <div class="int-bar-wrap">
-          <div class="int-bar-label">Monday</div>
-          <div class="int-bar-track"><div class="int-bar-fill" style="width:60%"></div></div>
-          <div class="int-bar-val">3 MOVEMENTS · Z1</div>
-        </div>
-        <div class="int-bar-wrap">
-          <div class="int-bar-label">Tuesday</div>
-          <div class="int-bar-track"><div class="int-bar-fill amber" style="width:25%"></div></div>
-          <div class="int-bar-val">RIDE ONLY</div>
-        </div>
-        <div class="int-bar-wrap">
-          <div class="int-bar-label">Wednesday</div>
-          <div class="int-bar-track"><div class="int-bar-fill" style="width:60%"></div></div>
-          <div class="int-bar-val">3 MOVEMENTS · Z1</div>
-        </div>
-        <div class="int-bar-wrap">
-          <div class="int-bar-label">Thursday</div>
-          <div class="int-bar-track"><div class="int-bar-fill" style="width:5%"></div></div>
-          <div class="int-bar-val">REST</div>
-        </div>
-        <div class="int-bar-wrap">
-          <div class="int-bar-label">Friday</div>
-          <div class="int-bar-track"><div class="int-bar-fill red" style="width:85%"></div></div>
-          <div class="int-bar-val">4 MOVEMENTS · Z3 VO2</div>
-        </div>
-      </div>
+```
+<!-- INTENSITY BAR -->
+<div class="intensity-section">
+  <div class="section-label">Weekly Load Profile</div>
+  <div class="intensity-bars">
+    <div class="int-bar-wrap">
+      <div class="int-bar-label">Monday</div>
+      <div class="int-bar-track"><div class="int-bar-fill" style="width:60%"></div></div>
+      <div class="int-bar-val">3 MOVEMENTS · Z1</div>
     </div>
+    <div class="int-bar-wrap">
+      <div class="int-bar-label">Tuesday</div>
+      <div class="int-bar-track"><div class="int-bar-fill amber" style="width:25%"></div></div>
+      <div class="int-bar-val">RIDE ONLY</div>
+    </div>
+    <div class="int-bar-wrap">
+      <div class="int-bar-label">Wednesday</div>
+      <div class="int-bar-track"><div class="int-bar-fill" style="width:60%"></div></div>
+      <div class="int-bar-val">3 MOVEMENTS · Z1</div>
+    </div>
+    <div class="int-bar-wrap">
+      <div class="int-bar-label">Thursday</div>
+      <div class="int-bar-track"><div class="int-bar-fill" style="width:5%"></div></div>
+      <div class="int-bar-val">REST</div>
+    </div>
+    <div class="int-bar-wrap">
+      <div class="int-bar-label">Friday</div>
+      <div class="int-bar-track"><div class="int-bar-fill red" style="width:85%"></div></div>
+      <div class="int-bar-val">4 MOVEMENTS · Z3 VO2</div>
+    </div>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- WEEK 2 -->
+
   <div class="week-panel" id="week-2">
     <div class="week-header">
       <div class="week-title">
@@ -1673,6 +1688,7 @@
   </div>
 
   <!-- WEEK 3 -->
+
   <div class="week-panel" id="week-3">
     <div class="week-header">
       <div class="week-title">
@@ -1703,12 +1719,13 @@
         </div>
       </div>
       <div class="day-card strength">
-        <div class="day-card-head"><div class="day-name">WED</div><div class="day-type-badge strength">AGILITY ADD</div></div>
+        <div class="day-card-head"><div class="day-name">WED</div><div class="day-type-badge strength">AGILITY + CORE</div></div>
         <div class="day-card-body">
           <div class="movement-row"><div class="mvmt-tag">AGILITY</div><div class="mvmt-name">Lateral Shuffle</div><div class="mvmt-sets">3×20s</div></div>
           <div class="movement-row"><div class="mvmt-tag">SQUAT</div><div class="mvmt-name">Back Squat +5 lb</div><div class="mvmt-sets">3×8</div></div>
           <div class="movement-row"><div class="mvmt-tag">LUNGE</div><div class="mvmt-name">Bulgarian Split Squat</div><div class="mvmt-sets">3×8/l</div></div>
           <div class="movement-row"><div class="mvmt-tag">PULL</div><div class="mvmt-name">Weighted Pull-Up</div><div class="mvmt-sets">3×5</div></div>
+          <div class="movement-row"><div class="mvmt-tag">CORE</div><div class="mvmt-name">Ab Roller 8–10 reps</div><div class="mvmt-sets">3×8–10</div></div>
           <div class="cycling-row"><div class="cycling-zone zone-1">Z1</div><div class="cycling-info">55–75% FTP</div></div>
         </div>
       </div>
@@ -1720,13 +1737,13 @@
         </div>
       </div>
       <div class="day-card strength vo2">
-        <div class="day-card-head"><div class="day-name">FRI</div><div class="day-type-badge vo2">FULL WHEEL</div></div>
+        <div class="day-card-head"><div class="day-name">FRI</div><div class="day-type-badge vo2">4 MVT + Z3</div></div>
         <div class="day-card-body">
           <div class="movement-row"><div class="mvmt-tag">HINGE</div><div class="mvmt-name">Hip Thrust +5 lb</div><div class="mvmt-sets">3×10</div></div>
           <div class="movement-row"><div class="mvmt-tag">PUSH</div><div class="mvmt-name">DB OH Press +5 lb</div><div class="mvmt-sets">3×8</div></div>
           <div class="movement-row"><div class="mvmt-tag">ROTATE</div><div class="mvmt-name">Slam Ball Rotational</div><div class="mvmt-sets">3×10/s</div></div>
           <div class="movement-row"><div class="mvmt-tag">LOCO</div><div class="mvmt-name">KB Farmer's Carry</div><div class="mvmt-sets">3×40m</div></div>
-          <div class="movement-row"><div class="mvmt-tag">CORE</div><div class="mvmt-name">Ab Roller +2 reps</div><div class="mvmt-sets">3×10</div></div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:.1em;margin:6px 0 4px;font-style:italic;">Ab Roller → Wednesday this week</div>
           <div class="cycling-row"><div class="cycling-zone zone-3">Z3</div><div class="cycling-info">106–120% FTP<br>VO2 MAX · PEAK</div></div>
         </div>
       </div>
@@ -1736,14 +1753,15 @@
       <div class="intensity-bars">
         <div class="int-bar-wrap"><div class="int-bar-label">Monday</div><div class="int-bar-track"><div class="int-bar-fill" style="width:75%"></div></div><div class="int-bar-val">4 MVT + KB SWING</div></div>
         <div class="int-bar-wrap"><div class="int-bar-label">Tuesday</div><div class="int-bar-track"><div class="int-bar-fill amber" style="width:25%"></div></div><div class="int-bar-val">RIDE ONLY</div></div>
-        <div class="int-bar-wrap"><div class="int-bar-label">Wednesday</div><div class="int-bar-track"><div class="int-bar-fill" style="width:80%"></div></div><div class="int-bar-val">4 MVT + AGILITY</div></div>
+        <div class="int-bar-wrap"><div class="int-bar-label">Wednesday</div><div class="int-bar-track"><div class="int-bar-fill" style="width:85%"></div></div><div class="int-bar-val">5 MVT + CORE</div></div>
         <div class="int-bar-wrap"><div class="int-bar-label">Thursday</div><div class="int-bar-track"><div class="int-bar-fill" style="width:5%"></div></div><div class="int-bar-val">REST</div></div>
-        <div class="int-bar-wrap"><div class="int-bar-label">Friday</div><div class="int-bar-track"><div class="int-bar-fill red" style="width:100%"></div></div><div class="int-bar-val">5 MVT + Z3 VO2 · PEAK</div></div>
+        <div class="int-bar-wrap"><div class="int-bar-label">Friday</div><div class="int-bar-track"><div class="int-bar-fill red" style="width:90%"></div></div><div class="int-bar-val">4 MVT + Z3 VO2</div></div>
       </div>
     </div>
   </div>
 
   <!-- WEEK 4 -->
+
   <div class="week-panel" id="week-4">
     <div class="week-header">
       <div class="week-title">
@@ -1809,6 +1827,7 @@
   </div>
 
   <!-- CYCLING TABLE -->
+
   <div class="section-label" style="margin-top:40px;">Cycling Protocol</div>
   <div class="cycling-table">
     <div class="ctable-row header">
@@ -1849,6 +1868,7 @@
   </div>
 
   <!-- PROGRESSIVE OVERLOAD LOG -->
+
   <div class="section-label" style="margin-top:40px;">Progressive Overload Log</div>
   <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:12px;">Click any cell to enter your working weights. These numbers are your program.</div>
   <div class="log-table-wrap">
@@ -1881,6 +1901,7 @@
   </div>
 
   <!-- NUTRITION -->
+
   <div class="section-label" style="margin-top:40px;">Nutrition Quick-Reference</div>
   <div class="nutrition-strip">
     <div class="nut-card">
@@ -1913,12 +1934,13 @@
   </div>
 
   <!-- MIND PROTOCOL -->
+
   <div class="section-label">Daily Mind Protocol</div>
   <div class="mind-section">
-    <div class="mind-card">
-      <div class="mind-title">Pre-Session Box Breathing</div>
+    <div class="mind-card" style="border-left:3px solid var(--cyan);">
+      <div class="mind-title">Pre-Session Box Breathing <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--red);letter-spacing:.15em;font-weight:400;margin-left:8px;">NON-NEGOTIABLE</span></div>
       <div class="mind-body">
-        Activates the parasympathetic nervous system. Cuts through morning scatter before heavy lifting. 3 minutes, 3–5 cycles.
+        Activates the parasympathetic nervous system. Reduces cortisol and primes neuromuscular focus before heavy lifting. Particularly functional for ADHD mornings. 3 minutes, 3–5 cycles. This block does not get skipped.
       </div>
       <div class="breathing-visual">
         <div class="breath-phase active"><span class="breath-count">4</span>INHALE</div>
@@ -1945,6 +1967,7 @@
   </div>
 
   <!-- PROGRAM RESET -->
+
   <div class="reset-section">
     <div class="reset-title">⟳ Program Reset — Week 5 Onward</div>
     <div class="reset-grid">
@@ -1960,6 +1983,7 @@
   </div>
 
   <!-- FOOTER -->
+
   <div class="footer">
     <div class="footer-tag">Movement Medicine Wheel · v2 · Recomposition Protocol · 5'7" · 175→155–165 lbs</div>
     <div class="footer-tag"><span class="live-dot"></span> Log active · Data stored in session</div>
@@ -1996,5 +2020,6 @@ if (phases.length) {
   }, 1200);
 }
 </script>
+
 </body>
 </html>
