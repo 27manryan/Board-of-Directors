@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --navy: #1B2A4A;
+    --gold: #B8972E;
+    --cream: #F5F0E8;
+    --muted: #6B7FA3;
+  }
+
+  * {
+    border-radius: 0 !important;
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: #F5F0E8;
+  }
+
+  body {
+    background-color: #F5F0E8;
+    color: #1B2A4A;
+    font-family: system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background-color: #B8972E;
+    color: #F5F0E8;
+  }
+}
+
+@layer components {
+  .label {
+    @apply text-xs font-medium uppercase tracking-widest text-[#6B7FA3];
+  }
+
+  .btn-primary {
+    @apply bg-navy text-cream-100 px-8 py-3 text-xs font-medium uppercase tracking-widest
+           hover:bg-navy-light transition-colors duration-150 cursor-pointer;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-navy text-xs font-medium uppercase tracking-widest
+           border-b border-navy hover:border-gold hover:text-gold
+           transition-colors duration-150 cursor-pointer pb-0.5;
+  }
+
+  .input-field {
+    @apply w-full bg-white border border-[#ECE8E0] text-navy
+           px-4 py-3 text-sm placeholder:text-[#6B7FA3]
+           focus:outline-none focus:border-navy transition-colors duration-150;
+  }
+
+  .card {
+    @apply bg-white border border-[#ECE8E0];
+  }
+
+  .divider {
+    @apply border-t border-[#ECE8E0];
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #F2EDE5;
+}
+::-webkit-scrollbar-thumb {
+  background: #6B7FA3;
+}
