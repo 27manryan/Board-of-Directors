@@ -13,10 +13,8 @@ export function getNotionClient() {
 // AUTO-LINK
 // =========================================================================
 
-// Uses notion.search (title-based, no property name dependency) to find the
-// client page in the Clients & Projects database, then locates the Drafting
-// child page under it. Returns the Drafting page ID, or null if not found.
-export async function findDraftingPageId(clientName: string): Promise<string | null> {
+// Finds the client page in the Clients & Projects database by title match.
+async function findClientPage(clientName: string) {
   const notion = getNotionClient();
   const dbId = process.env.NOTION_CLIENTS_DATABASE_ID!.replace(/-/g, "");
 
@@ -26,29 +24,29 @@ export async function findDraftingPageId(clientName: string): Promise<string | n
     page_size: 20,
   });
 
-  // Find a page that lives in our database and whose title matches clientName
-  const clientPage = response.results.find((result) => {
+  return response.results.find((result) => {
     if (result.object !== "page") return false;
     if (!("parent" in result)) return false;
     const parent = (result as { parent: { type: string; database_id?: string } }).parent;
     if (parent.type !== "database_id") return false;
     if ((parent.database_id ?? "").replace(/-/g, "") !== dbId) return false;
 
-    // Check title property
     const props = (result as { properties: Record<string, { type: string; title?: RichTextItemResponse[] }> }).properties;
     const titleProp = Object.values(props).find((p) => p.type === "title");
     if (!titleProp?.title) return false;
     const title = titleProp.title.map((t) => t.plain_text).join("").trim();
     return title.toLowerCase() === clientName.toLowerCase().trim();
-  });
+  }) ?? null;
+}
 
-  if (!clientPage) return null;
-
-  // Walk child blocks of the client page to find the "Drafting" sub-page
+// Walks child blocks of a page looking for a child_page with the given name.
+async function findChildPageByName(parentId: string, name: string): Promise<string | null> {
+  const notion = getNotionClient();
+  const target = name.toLowerCase().trim();
   let cursor: string | undefined;
   do {
     const children = await notion.blocks.children.list({
-      block_id: clientPage.id,
+      block_id: parentId,
       start_cursor: cursor,
       page_size: 100,
     });
@@ -62,7 +60,7 @@ export async function findDraftingPageId(clientName: string): Promise<string | n
       ) {
         const title = (block as Extract<BlockObjectResponse, { type: "child_page" }>)
           .child_page.title;
-        if (title.toLowerCase().trim() === "drafting") {
+        if (title.toLowerCase().trim() === target) {
           return block.id;
         }
       }
@@ -71,6 +69,20 @@ export async function findDraftingPageId(clientName: string): Promise<string | n
   } while (cursor);
 
   return null;
+}
+
+// Finds the "Drafting" child page inside a client's Notion record.
+export async function findDraftingPageId(clientName: string): Promise<string | null> {
+  const clientPage = await findClientPage(clientName);
+  if (!clientPage) return null;
+  return findChildPageByName(clientPage.id, "Drafting");
+}
+
+// Finds the "Discovery" child page inside a client's Notion record.
+export async function findDiscoveryPageId(clientName: string): Promise<string | null> {
+  const clientPage = await findClientPage(clientName);
+  if (!clientPage) return null;
+  return findChildPageByName(clientPage.id, "Discovery");
 }
 
 // =========================================================================
@@ -374,4 +386,132 @@ export async function fetchDraftingDeliverables(
 
   if (current) deliverables.push(current);
   return deliverables;
+}
+
+// =========================================================================
+// DISCOVERY QUESTIONS — fetch + write-back
+// =========================================================================
+
+export interface DiscoveryQuestion {
+  blockId: string;
+  heading: string;
+  questionText: string;
+}
+
+// Reads the Discovery page: H3 = question identifier, first paragraph
+// below each H3 = the question text shown to the client.
+export async function fetchDiscoveryQuestions(
+  discoveryPageId: string
+): Promise<DiscoveryQuestion[]> {
+  const notion = getNotionClient();
+  const allBlocks: BlockObjectResponse[] = [];
+
+  let cursor: string | undefined;
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: discoveryPageId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+    allBlocks.push(...(response.results as BlockObjectResponse[]));
+    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+
+  const questions: DiscoveryQuestion[] = [];
+  let pendingHeading: { blockId: string; heading: string } | null = null;
+
+  for (const block of allBlocks) {
+    if (block.type === "heading_3") {
+      const heading = richTextToPlain(block.heading_3.rich_text).trim();
+      if (heading) {
+        pendingHeading = { blockId: block.id, heading };
+      }
+      continue;
+    }
+    if (pendingHeading && block.type === "paragraph") {
+      const text = richTextToPlain(block.paragraph.rich_text).trim();
+      if (text) {
+        questions.push({ ...pendingHeading, questionText: text });
+      }
+      pendingHeading = null;
+    }
+  }
+
+  return questions;
+}
+
+// Writes client answers back to the Discovery page in Notion.
+// For each answer, appends a bold "Response:" paragraph after the
+// question's H3 block using the Notion API.
+export async function writeDiscoveryAnswers(
+  discoveryPageId: string,
+  answers: { heading: string; answer: string }[]
+): Promise<void> {
+  if (answers.length === 0) return;
+  const notion = getNotionClient();
+
+  const datestamp = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const children: any[] = [
+    { object: "block", type: "divider", divider: {} },
+    {
+      object: "block",
+      type: "heading_2",
+      heading_2: {
+        rich_text: [{ type: "text", text: { content: "Client Discovery Responses" } }],
+      },
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      paragraph: {
+        rich_text: [{
+          type: "text",
+          text: { content: `Submitted ${datestamp}` },
+          annotations: { italic: true, color: "gray" },
+        }],
+      },
+    },
+  ];
+
+  for (const a of answers) {
+    children.push({
+      object: "block",
+      type: "paragraph",
+      paragraph: {
+        rich_text: [{
+          type: "text",
+          text: { content: `${a.heading}` },
+          annotations: { bold: true },
+        }],
+      },
+    });
+    children.push({
+      object: "block",
+      type: "paragraph",
+      paragraph: {
+        rich_text: [
+          {
+            type: "text",
+            text: { content: "Response: " },
+            annotations: { bold: true },
+          },
+          {
+            type: "text",
+            text: { content: a.answer },
+          },
+        ],
+      },
+    });
+  }
+
+  await notion.blocks.children.append({
+    block_id: discoveryPageId,
+    children,
+  });
 }

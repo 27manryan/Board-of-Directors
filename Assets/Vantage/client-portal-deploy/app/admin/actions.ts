@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { findDraftingPageId } from "@/lib/notion";
+import { findDraftingPageId, findDiscoveryPageId } from "@/lib/notion";
 import {
   PACKAGES,
   REVISION_ROUND_PRICE,
@@ -331,6 +331,47 @@ export async function setNotionPageIdAction(
   }
   const admin = createAdminClient();
   const { error } = await admin.from("clients").update({ notion_drafting_page_id: cleaned }).eq("id", clientId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin");
+  return { ok: true, pageId: cleaned };
+}
+
+// =========================================================================
+// NOTION LINK — DISCOVERY
+// =========================================================================
+
+export async function autoLinkDiscoveryAction(
+  clientId: string,
+  clientName: string
+): Promise<NotionLinkResult> {
+  await requireAdmin();
+  let pageId: string | null;
+  try {
+    pageId = await findDiscoveryPageId(clientName);
+  } catch (e) {
+    return { ok: false, error: `Notion error: ${(e as Error).message}` };
+  }
+  if (!pageId) {
+    return { ok: false, error: `No "Discovery" page found for "${clientName}" in Notion.` };
+  }
+  const admin = createAdminClient();
+  const { error } = await admin.from("clients").update({ notion_discovery_page_id: pageId }).eq("id", clientId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin");
+  return { ok: true, pageId };
+}
+
+export async function setDiscoveryPageIdAction(
+  clientId: string,
+  pageId: string
+): Promise<NotionLinkResult> {
+  await requireAdmin();
+  const cleaned = pageId.trim().replace(/-/g, "");
+  if (cleaned.length !== 32) {
+    return { ok: false, error: "Invalid Notion page ID — should be 32 hex characters." };
+  }
+  const admin = createAdminClient();
+  const { error } = await admin.from("clients").update({ notion_discovery_page_id: cleaned }).eq("id", clientId);
   if (error) return { ok: false, error: error.message };
   revalidatePath("/admin");
   return { ok: true, pageId: cleaned };

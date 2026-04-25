@@ -6,6 +6,7 @@ import { VisibilityToggle } from "./_components/VisibilityToggle";
 import { PaymentToggle } from "./_components/PaymentToggle";
 import { DeleteClientButton } from "./_components/DeleteClientButton";
 import { NotionLinkCell } from "./_components/NotionLinkCell";
+import { DiscoveryLinkCell } from "./_components/DiscoveryLinkCell";
 import { EditClientButton } from "./_components/EditClientButton";
 import { RevisionRoundButton } from "./_components/RevisionRoundButton";
 import {
@@ -45,7 +46,9 @@ type ClientRow = {
   payment_2_status: string;
   payment_3_status: string;
   notion_drafting_page_id: string | null;
+  notion_discovery_page_id: string | null;
   deliverable_visibility: VisibilityRow[];
+  discovery_submissions: { id: string; submitted_at: string; answers: Record<string, string> }[];
 };
 
 export default async function AdminPage() {
@@ -58,7 +61,7 @@ export default async function AdminPage() {
   const { data, error } = await admin
     .from("clients")
     .select(
-      "id, name, email, project_name, package, addon_competitive_audit, addon_internal_messaging, addon_rush_delivery, addon_pitch_deck, veteran_discount, custom_price, project_total, revision_round_balance, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id, deliverable_visibility ( deliverable_code, released )"
+      "id, name, email, project_name, package, addon_competitive_audit, addon_internal_messaging, addon_rush_delivery, addon_pitch_deck, veteran_discount, custom_price, project_total, revision_round_balance, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id, notion_discovery_page_id, deliverable_visibility ( deliverable_code, released ), discovery_submissions ( id, submitted_at, answers )"
     )
     .order("created_at", { ascending: false });
 
@@ -71,9 +74,19 @@ export default async function AdminPage() {
           <p className="text-[10px] font-medium uppercase tracking-widest text-gold mb-1">Internal</p>
           <h1 className="font-serif text-xl font-semibold text-cream-100">Admin — Client Management</h1>
         </div>
-        <a href="/dashboard" className="text-[10px] font-medium uppercase tracking-widest text-cream-300/50 hover:text-cream-100 transition-colors">
-          ← Portal
-        </a>
+        <div className="flex items-center gap-6">
+          <a href="/dashboard" className="text-[10px] font-medium uppercase tracking-widest text-cream-300/50 hover:text-cream-100 transition-colors">
+            Portal
+          </a>
+          <form action="/api/auth/signout" method="post">
+            <button
+              type="submit"
+              className="text-[10px] font-medium uppercase tracking-widest text-cream-300/50 hover:text-gold transition-colors"
+            >
+              Sign Out
+            </button>
+          </form>
+        </div>
       </header>
 
       <div className="px-8 py-10 max-w-7xl mx-auto">
@@ -179,12 +192,30 @@ export default async function AdminPage() {
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4">
-                          <NotionLinkCell
-                            clientId={client.id}
-                            clientName={client.name}
-                            initialPageId={client.notion_drafting_page_id}
-                          />
+                        <td className="px-6 py-4 space-y-3">
+                          <div>
+                            <p className="text-[9px] text-muted uppercase tracking-widest mb-1">Drafting</p>
+                            <NotionLinkCell
+                              clientId={client.id}
+                              clientName={client.name}
+                              initialPageId={client.notion_drafting_page_id}
+                            />
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-muted uppercase tracking-widest mb-1">Discovery</p>
+                            <DiscoveryLinkCell
+                              clientId={client.id}
+                              clientName={client.name}
+                              initialPageId={client.notion_discovery_page_id}
+                            />
+                            {client.discovery_submissions.length > 0 ? (
+                              <p className="text-[9px] text-[#2D5C2D] uppercase tracking-widest mt-1">
+                                ✓ Submitted {new Date(client.discovery_submissions[0].submitted_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                              </p>
+                            ) : (
+                              <p className="text-[9px] text-muted uppercase tracking-widest mt-1">Not submitted</p>
+                            )}
+                          </div>
                         </td>
                         {TOGGLEABLE_CODES.map((code) => (
                           <td key={code} className="px-2 py-4 text-center">
