@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { paymentSchedule, PACKAGES, ADDONS, type PackageKey } from "@/lib/engagement";
 
 export async function POST(req: NextRequest) {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
   // Create or retrieve Stripe customer
   let customerId = client.stripe_customer_id as string | undefined;
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email: client.email,
       name: client.name,
       metadata: { client_id: client.id },
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: customerId,
     payment_method_types: ["card"],
     line_items: lineItems,
