@@ -310,7 +310,7 @@
 // ── CONFIG — EDIT THIS ────────────────────────────────────────────────────────
 // Replace with your n8n webhook URL after setting up the webhook node.
 // e.g. "https://your-cloudflare-tunnel.domain.com/webhook/vpm-drill"
-const N8N_WEBHOOK_URL = "YOUR_N8N_WEBHOOK_URL";
+const N8N_WEBHOOK_URL = "https://drill.vantagestrat.co/webhook/vpm-drill";
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -327,7 +327,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (concept) {
     document.getElementById('upstream-input').value = decodeURIComponent(concept);
   }
-  if (N8N_WEBHOOK_URL === "YOUR_N8N_WEBHOOK_URL") {
+  if (N8N_WEBHOOK_URL === "https://drill.vantagestrat.co/webhook/vpm-drill") {
     document.getElementById('setup-notice').style.display = 'block';
   }
 });
