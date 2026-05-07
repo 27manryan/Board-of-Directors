@@ -558,13 +558,13 @@ Morgan: Five paths — Vertical, Audience, Horizontal, Platform, Service. Beachh
 
 VANTAGE VOICE RULES:
 No em dashes. No AI vocabulary (meticulous, elevate, robust, seamless, transformative, comprehensive, cutting-edge).
-Short declarative sentences. Specific over general. Dry humor only when earned.`;
+Follows the 5C rule. Specific over general. Dry humor only when earned.`;
 }
 
 // ── PARSERS ───────────────────────────────────────────────────────────────────
 function parseRecognition(text) {
   function get(key) {
-    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z_]+:|$)`, 's'));
+    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`, 's'));
     return m ? m[1].trim() : null;
   }
   return {
@@ -576,7 +576,7 @@ function parseRecognition(text) {
 
 function parseEdit(text) {
   function get(key) {
-    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z_]+:|$)`, 's'));
+    const m = text.match(new RegExp(`${key}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`, 's'));
     return m ? m[1].trim() : null;
   }
   return {
