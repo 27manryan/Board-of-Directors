@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Vantage Client Portal",
   description: "Vantage Strategic Communications — Client Portal",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

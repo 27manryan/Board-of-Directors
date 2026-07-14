@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchDiscoveryQuestions } from "@/lib/notion";
 import DiscoveryForm from "./_components/DiscoveryForm";
 
@@ -9,11 +8,9 @@ export default async function DiscoveryPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
     .select("id, notion_discovery_page_id")
-    .eq("supabase_user_id", user.id)
     .single();
 
   if (!client) {
@@ -54,13 +51,14 @@ export default async function DiscoveryPage() {
           <div className="mt-3 w-8 h-px bg-gold" />
         </div>
         <div className="card px-8 py-12 text-center">
-          <p className="text-sm text-red-700">Unable to load discovery questions. Please try again later.</p>
+          <p className="font-serif text-xl text-navy">Discovery is temporarily unavailable.</p>
+          <p className="text-sm text-muted mt-2">Your questionnaire is safe. Please try again in a few minutes.</p>
         </div>
       </div>
     );
   }
 
-  const { data: existingSubmission } = await admin
+  const { data: existingSubmission } = await supabase
     .from("discovery_submissions")
     .select("id, submitted_at, answers")
     .eq("client_id", client.id)

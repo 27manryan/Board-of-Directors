@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createClientAction, type CreateClientResult } from "../actions";
-import { PACKAGES, ADDONS, SERVICE_ADDON_KEYS, projectTotal, paymentSchedule, type PackageKey } from "@/lib/engagement";
+import { PACKAGES, ADDONS, projectTotal, paymentSchedule, type PackageKey } from "@/lib/engagement";
 
 const NO_ADDONS: PackageKey[] = ["command", "pro_bono"];
 
@@ -204,10 +204,13 @@ export function CreateClientForm() {
         </button>
         {result?.ok && (
           <div className="text-xs text-[#2D5C2D] font-medium">
-            <p className="mb-1">✓ Client created. Deliver these credentials manually:</p>
-            <code className="block bg-cream-200 px-3 py-2 font-mono text-navy">
-              {result.email} / {result.tempPassword}
+            <p className="mb-1">✓ Client created. Send this secure setup link when you are ready:</p>
+            <code className="block bg-cream-200 px-3 py-2 font-mono text-navy break-all">
+              {result.setupLink}
             </code>
+            <p className="text-[10px] text-muted mt-1">
+              Client email: {result.email}. No temporary password needs to be copied.
+            </p>
           </div>
         )}
         {result && !result.ok && (

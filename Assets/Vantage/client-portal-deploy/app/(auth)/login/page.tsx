@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-
-const ADMIN_EMAIL = "27manryan@gmail.com";
+import { isAdminEmail } from "@/lib/admin";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -31,7 +30,7 @@ export default function LoginPage() {
 
       // Full-page navigation so the middleware sees the freshly-set auth cookie
       // on the very next request. router.push races the cookie write.
-      window.location.href = email === ADMIN_EMAIL ? "/admin" : "/dashboard";
+      window.location.href = isAdminEmail(email) ? "/admin" : "/dashboard";
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unexpected sign-in error.";
       setError(message);

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { paymentSchedule, GATES } from "@/lib/engagement";
+import { getSyncedGate } from "@/lib/gate-sync";
 import PayButton from "./_components/PayButton";
 
 function fmt(cents: number) {
@@ -17,11 +17,9 @@ export default async function PaymentPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
-    .select("id, project_name, package, project_total, revision_round_balance, current_gate, payment_1_status, payment_2_status, payment_3_status, created_at")
-    .eq("supabase_user_id", user.id)
+    .select("id, project_name, package, project_total, revision_round_balance, current_gate, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id, created_at")
     .single();
 
   if (!client) redirect("/dashboard");
@@ -29,12 +27,13 @@ export default async function PaymentPage({
   const isProBono = client.package === "pro_bono";
   const [p1, p2, p3] = paymentSchedule(client.project_total);
   const revisionBalance = Number(client.revision_round_balance) || 0;
+  const { gate: currentGate, notionAvailable } = await getSyncedGate(client);
 
   // Which payment is currently due (if any)
   let duePmtNumber: 2 | 3 | null = null;
   if (!isProBono) {
-    if (client.payment_2_status === "unpaid" && client.current_gate >= 2) duePmtNumber = 2;
-    else if (client.payment_3_status === "unpaid" && client.current_gate >= 3) duePmtNumber = 3;
+    if (client.payment_2_status === "unpaid" && currentGate >= 2) duePmtNumber = 2;
+    else if (client.payment_3_status === "unpaid" && currentGate >= 3) duePmtNumber = 3;
   }
 
   const dueBaseAmount = duePmtNumber === 2 ? p2 : duePmtNumber === 3 ? p3 : 0;
@@ -43,7 +42,7 @@ export default async function PaymentPage({
   const successParam = searchParams.success;
   const successMsg =
     successParam === "p2" ? "Payment received. You may now submit your Gate 2 comments." :
-    successParam === "p3" ? "Payment received. Your final deliverable package is being prepared." :
+    successParam === "p3" ? "Payment received. Your final package is unlocked on the Deliverables page." :
     null;
 
   const payments = [
@@ -75,6 +74,14 @@ export default async function PaymentPage({
         <h1 className="font-serif text-4xl font-semibold text-navy">Payments</h1>
         <div className="mt-3 w-8 h-px bg-gold" />
       </div>
+
+      {!notionAvailable && (
+        <div className="mb-6 px-6 py-4 border-l-2 border-gold bg-[#FBF8F0]">
+          <p className="text-sm text-navy">
+            Live project status is temporarily unavailable. Billing is based on your last confirmed gate.
+          </p>
+        </div>
+      )}
 
       {/* Success banner */}
       {successMsg && (
@@ -138,7 +145,7 @@ export default async function PaymentPage({
             </div>
           ) : (
             // All caught-up state
-            !payments.every((p) => p.status === "paid") && client.current_gate < 2 && (
+            !payments.every((p) => p.status === "paid") && currentGate < 2 && (
               <div className="card px-4 sm:px-8 py-8 mb-8">
                 <p className="label mb-2">Billing Status</p>
                 <p className="font-serif text-2xl font-semibold text-navy">No payment due</p>

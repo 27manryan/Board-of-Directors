@@ -1,25 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { writeDiscoveryAnswers } from "@/lib/notion";
 import { Resend } from "resend";
+import { invalidateNotionCache } from "@/lib/notion-cache";
+import { afterDiscoverySubmitted } from "@/lib/portal-side-effects";
 
 export async function POST(req: NextRequest) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const admin = createAdminClient();
-
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
-    .select("id, name, project_name, notion_discovery_page_id")
-    .eq("supabase_user_id", user.id)
+    .select("id, name, email, project_name, notion_discovery_page_id")
     .single();
 
   if (!client) return NextResponse.json({ error: "Client not found" }, { status: 404 });
 
-  const { data: existing } = await admin
+  const { data: existing } = await supabase
     .from("discovery_submissions")
     .select("id")
     .eq("client_id", client.id)
@@ -50,13 +48,30 @@ export async function POST(req: NextRequest) {
     answersJson[a.heading] = a.answer.trim();
   }
 
-  const { error: submitError } = await admin.from("discovery_submissions").insert({
-    client_id: client.id,
-    answers: answersJson,
-  });
+  const { data: submission, error: submitError } = await supabase
+    .from("discovery_submissions")
+    .insert({
+      client_id: client.id,
+      answers: answersJson,
+    })
+    .select("id")
+    .single();
 
-  if (submitError) {
+  if (submitError || !submission) {
     return NextResponse.json({ error: "Failed to record submission" }, { status: 500 });
+  }
+
+  try {
+    await afterDiscoverySubmitted({
+      clientId: client.id,
+      submissionId: submission.id,
+      clientName: client.name,
+      projectName: client.project_name,
+      recipientEmail: client.email,
+      answers: answersJson,
+    });
+  } catch (sideEffectErr) {
+    console.error("Discovery client follow-up failed:", sideEffectErr);
   }
 
   if (client.notion_discovery_page_id) {
@@ -65,6 +80,7 @@ export async function POST(req: NextRequest) {
         client.notion_discovery_page_id,
         answers.map((a) => ({ heading: a.heading, answer: a.answer.trim() }))
       );
+      invalidateNotionCache("discovery");
     } catch (notionErr) {
       console.error("Notion discovery write-back failed:", notionErr);
     }

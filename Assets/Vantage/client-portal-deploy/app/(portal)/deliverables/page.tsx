@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchDraftingDeliverables, type NotionDeliverableStatus } from "@/lib/notion";
 import { DELIVERABLES, GATES } from "@/lib/engagement";
+import { getSyncedGate } from "@/lib/gate-sync";
 import DeliverablesView from "./_components/DeliverablesView";
+import FinalPackageCard from "./_components/FinalPackageCard";
+import { getDeliverableFile, isPackageUnlocked } from "@/lib/deliverable-files";
 
 export default async function DeliverablesPage({
   searchParams,
@@ -14,8 +16,7 @@ export default async function DeliverablesPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
     .select(`
       id,
@@ -26,7 +27,6 @@ export default async function DeliverablesPage({
       notion_drafting_page_id,
       deliverable_visibility ( deliverable_code, released )
     `)
-    .eq("supabase_user_id", user.id)
     .single();
 
   if (!client) {
@@ -38,7 +38,7 @@ export default async function DeliverablesPage({
   }
 
   const isProBono = client.package === "pro_bono";
-  const gate = (client.current_gate ?? 1) as 1 | 2 | 3;
+  const { gate, notionAvailable: gateStatusAvailable } = await getSyncedGate(client);
   const paymentRequired =
     !isProBono && gate === 2 && client.payment_2_status !== "paid";
 
@@ -50,14 +50,17 @@ export default async function DeliverablesPage({
 
   type NotionDeliverable = { code: string; title: string; notionStatus: NotionDeliverableStatus; contentBlocks: string[] };
   let notionMap = new Map<string, NotionDeliverable>();
+  let notionContentAvailable = true;
   if (client.notion_drafting_page_id) {
     try {
       const parsed = await fetchDraftingDeliverables(client.notion_drafting_page_id);
       notionMap = new Map(parsed.map((d) => [d.code, d]));
-    } catch {}
+    } catch {
+      notionContentAvailable = false;
+    }
   }
 
-  const { data: allComments } = await admin
+  const { data: allComments } = await supabase
     .from("comments")
     .select("deliverable_code, comment_text, submitted_at")
     .eq("client_id", client.id)
@@ -70,7 +73,7 @@ export default async function DeliverablesPage({
     commentsByCode.set(c.deliverable_code, existing);
   }
 
-  const { data: recentSubmission } = await admin
+  const { data: recentSubmission } = await supabase
     .from("submissions")
     .select("id")
     .eq("client_id", client.id)
@@ -94,6 +97,9 @@ export default async function DeliverablesPage({
       };
     });
 
+  const finalFile = await getDeliverableFile(client.id, supabase);
+  const packageUnlocked = isPackageUnlocked(client);
+
   return (
     <div className="px-4 sm:px-8 py-10 max-w-4xl">
       <div className="mb-10">
@@ -105,6 +111,30 @@ export default async function DeliverablesPage({
           feedback or revision requests, then submit when you&apos;re ready.
         </p>
       </div>
+
+      {!gateStatusAvailable && (
+        <div className="mb-6 px-6 py-4 border-l-2 border-gold bg-[#FBF8F0]">
+          <p className="text-sm text-navy">
+            Live project status is temporarily unavailable. Your last confirmed gate is being used.
+          </p>
+        </div>
+      )}
+
+      {!notionContentAvailable && (
+        <div className="mb-6 px-6 py-4 border-l-2 border-gold bg-[#FBF8F0]">
+          <p className="text-sm text-navy">
+            Document content is temporarily unavailable. Released deliverables are still listed below.
+          </p>
+        </div>
+      )}
+
+      {finalFile && (
+        <FinalPackageCard
+          fileName={finalFile.file_name}
+          unlocked={packageUnlocked}
+          isProBono={isProBono}
+        />
+      )}
 
       {visibleDeliverables.length === 0 ? (
         <div className="card px-8 py-12 text-center">
