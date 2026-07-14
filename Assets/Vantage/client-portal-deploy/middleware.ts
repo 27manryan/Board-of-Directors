@@ -1,7 +1,12 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { bypassPortalAuthentication } from "@/lib/middleware-paths";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
+  if (bypassPortalAuthentication(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
   return await updateSession(request);
 }
 

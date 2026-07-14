@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-const ADMIN_EMAIL = "27manryan@gmail.com";
+import { isAdminEmail } from "@/lib/admin";
 
 export default async function RootPage() {
   const supabase = createClient();
@@ -10,5 +9,5 @@ export default async function RootPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
-  redirect(user.email === ADMIN_EMAIL ? "/admin" : "/dashboard");
+  redirect(isAdminEmail(user.email) ? "/admin" : "/dashboard");
 }

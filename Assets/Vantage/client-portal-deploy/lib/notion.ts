@@ -3,7 +3,12 @@ import type {
   BlockObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+import { unstable_cache } from "next/cache";
 import { DELIVERABLES } from "@/lib/engagement";
+import {
+  NOTION_CACHE_TAGS,
+  NOTION_CACHE_TTL_SECONDS,
+} from "@/lib/notion-cache";
 
 export function getNotionClient() {
   return new Client({ auth: process.env.NOTION_API_KEY });
@@ -110,7 +115,7 @@ function isCompleteStatus(raw: string): boolean {
 
 // Fetches and parses the Gate Status table from the top of the Drafting page.
 // Expects the first `table` block found; skips the header row.
-export async function fetchGateStatusTable(draftingPageId: string): Promise<GateTableRow[]> {
+async function fetchGateStatusTableUncached(draftingPageId: string): Promise<GateTableRow[]> {
   const notion = getNotionClient();
 
   // Find the first table block in the Drafting page
@@ -154,6 +159,15 @@ export async function fetchGateStatusTable(draftingPageId: string): Promise<Gate
 
   return rows;
 }
+
+export const fetchGateStatusTable = unstable_cache(
+  fetchGateStatusTableUncached,
+  ["notion-gate-status-reader"],
+  {
+    revalidate: NOTION_CACHE_TTL_SECONDS,
+    tags: [NOTION_CACHE_TAGS.gateStatus],
+  }
+);
 
 // Derives current active gate (1, 2, or 3) from the gate table rows.
 // "current gate" = the first gate that is NOT complete.
@@ -348,7 +362,7 @@ export async function appendCommentsToNotion(
 // BLOCK PARSER — Deliverables (fetch + parse)
 // =========================================================================
 
-export async function fetchDraftingDeliverables(
+async function fetchDraftingDeliverablesUncached(
   draftingPageId: string
 ): Promise<ParsedDeliverable[]> {
   const notion = getNotionClient();
@@ -388,6 +402,15 @@ export async function fetchDraftingDeliverables(
   return deliverables;
 }
 
+export const fetchDraftingDeliverables = unstable_cache(
+  fetchDraftingDeliverablesUncached,
+  ["notion-drafting-reader"],
+  {
+    revalidate: NOTION_CACHE_TTL_SECONDS,
+    tags: [NOTION_CACHE_TAGS.drafting],
+  }
+);
+
 // =========================================================================
 // DISCOVERY QUESTIONS — fetch + write-back
 // =========================================================================
@@ -400,7 +423,7 @@ export interface DiscoveryQuestion {
 
 // Reads the Discovery page: H3 = question identifier, first paragraph
 // below each H3 = the question text shown to the client.
-export async function fetchDiscoveryQuestions(
+async function fetchDiscoveryQuestionsUncached(
   discoveryPageId: string
 ): Promise<DiscoveryQuestion[]> {
   const notion = getNotionClient();
@@ -439,6 +462,15 @@ export async function fetchDiscoveryQuestions(
 
   return questions;
 }
+
+export const fetchDiscoveryQuestions = unstable_cache(
+  fetchDiscoveryQuestionsUncached,
+  ["notion-discovery-reader"],
+  {
+    revalidate: NOTION_CACHE_TTL_SECONDS,
+    tags: [NOTION_CACHE_TAGS.discovery],
+  }
+);
 
 // Writes client answers back to the Discovery page in Notion.
 // For each answer, appends a bold "Response:" paragraph after the
@@ -512,6 +544,68 @@ export async function writeDiscoveryAnswers(
 
   await notion.blocks.children.append({
     block_id: discoveryPageId,
+    children,
+  });
+}
+
+// =========================================================================
+// APPEND APPROVED CLIENT PROFILE SUMMARY
+// =========================================================================
+
+export async function appendClientProfileSummaryToNotion(
+  pageId: string,
+  profileMarkdown: string
+): Promise<void> {
+  const notion = getNotionClient();
+  const datestamp = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const lines = profileMarkdown
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .slice(0, 80);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const children: any[] = [
+    { object: "block", type: "divider", divider: {} },
+    {
+      object: "block",
+      type: "heading_2",
+      heading_2: {
+        rich_text: [{ type: "text", text: { content: "Approved Client Profile" } }],
+      },
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      paragraph: {
+        rich_text: [{
+          type: "text",
+          text: { content: `Published ${datestamp}` },
+          annotations: { italic: true, color: "gray" },
+        }],
+      },
+    },
+    ...lines.map((line) => ({
+      object: "block",
+      type: line.startsWith("# ")
+        ? "heading_3"
+        : "paragraph",
+      [line.startsWith("# ") ? "heading_3" : "paragraph"]: {
+        rich_text: [{
+          type: "text",
+          text: { content: line.replace(/^#+\s*/, "") },
+        }],
+      },
+    })),
+  ];
+
+  await notion.blocks.children.append({
+    block_id: pageId,
     children,
   });
 }

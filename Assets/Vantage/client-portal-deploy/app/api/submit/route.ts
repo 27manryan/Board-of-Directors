@@ -1,26 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { updateGateStatus, appendCommentsToNotion } from "@/lib/notion";
 import { Resend } from "resend";
 import { GATES } from "@/lib/engagement";
+import { getSyncedGate } from "@/lib/gate-sync";
+import { invalidateNotionCache } from "@/lib/notion-cache";
+import { afterGateSubmitted } from "@/lib/portal-side-effects";
 
 export async function POST(req: NextRequest) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const admin = createAdminClient();
-
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
-    .select("id, name, project_name, package, current_gate, payment_2_status, notion_drafting_page_id")
-    .eq("supabase_user_id", user.id)
+    .select("id, name, email, project_name, package, current_gate, payment_2_status, notion_drafting_page_id")
     .single();
 
   if (!client) return NextResponse.json({ error: "Client not found" }, { status: 404 });
 
-  const gate = client.current_gate as 1 | 2 | 3;
+  const { gate } = await getSyncedGate(client);
   const isProBono = client.package === "pro_bono";
 
   if (gate === 2 && !isProBono && client.payment_2_status !== "paid") {
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { data: existing } = await admin
+  const { data: existing } = await supabase
     .from("submissions")
     .select("id")
     .eq("client_id", client.id)
@@ -59,26 +58,45 @@ export async function POST(req: NextRequest) {
       deliverable_code: c.deliverable_code,
       comment_text: c.comment_text.trim(),
     }));
-    await admin.from("comments").insert(rows);
+    await supabase.from("comments").insert(rows);
   }
 
-  const { data: allComments } = await admin
+  const { data: allComments } = await supabase
     .from("comments")
     .select("deliverable_code, comment_text, submitted_at")
     .eq("client_id", client.id)
     .order("submitted_at", { ascending: true });
 
-  const { error: submitError } = await admin.from("submissions").insert({
-    client_id: client.id,
-    gate,
-    payment_confirmed: gate === 1 || isProBono || (gate === 2 && client.payment_2_status === "paid"),
-  });
+  const { data: submission, error: submitError } = await supabase
+    .from("submissions")
+    .insert({
+      client_id: client.id,
+      gate,
+      payment_confirmed: gate === 1 || isProBono || (gate === 2 && client.payment_2_status === "paid"),
+    })
+    .select("id")
+    .single();
 
-  if (submitError) {
+  if (submitError || !submission) {
     return NextResponse.json({ error: "Failed to record submission" }, { status: 500 });
   }
 
   const gateName = GATES[gate]?.name ?? `Gate ${gate}`;
+  const gateLabel = `Gate ${gate}`;
+
+  try {
+    await afterGateSubmitted({
+      clientId: client.id,
+      submissionId: submission.id,
+      clientName: client.name,
+      projectName: client.project_name,
+      recipientEmail: client.email,
+      gateLabel,
+    });
+  } catch (sideEffectErr) {
+    console.error("Gate client follow-up failed:", sideEffectErr);
+  }
+
   const notifyEmail = process.env.NOTIFY_EMAIL ?? "info@vantagestrat.co";
 
   const commentLines = (allComments ?? [])
@@ -128,6 +146,7 @@ ${commentLines ? `COMMENTS\n--------\n${commentLines}` : "No comments submitted.
     } catch (notionErr) {
       console.error("Notion gate status update failed:", notionErr);
     }
+    invalidateNotionCache("gateStatus", "drafting");
   }
 
   return NextResponse.json({ ok: true });

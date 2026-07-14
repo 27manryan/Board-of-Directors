@@ -1,8 +1,8 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-// Service-role client — bypasses RLS. Use ONLY in server actions / route handlers
-// for admin operations (creating auth users, seeding tables). Never import into
-// client components.
+// Service-role client bypasses RLS. Use it only for genuine privileged work,
+// such as admin operations, narrow system persistence, and signed storage URLs.
+// Client-owned reads and writes must use the authenticated request client.
 export function createAdminClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

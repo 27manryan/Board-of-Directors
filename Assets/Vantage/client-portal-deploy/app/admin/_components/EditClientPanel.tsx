@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { updateClientAction, type UpdateClientData } from "../actions";
-import { PACKAGES, ADDONS, projectTotal, paymentSchedule, type PackageKey, type AddonKey } from "@/lib/engagement";
+import { PACKAGES, ADDONS, projectTotal, paymentSchedule, type PackageKey } from "@/lib/engagement";
 
 interface ClientSnapshot {
   id: string;

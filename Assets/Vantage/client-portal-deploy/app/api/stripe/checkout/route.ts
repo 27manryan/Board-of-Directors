@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { stripe } from "@/lib/stripe";
-import { paymentSchedule, PACKAGES, ADDONS, type PackageKey } from "@/lib/engagement";
+import { getStripe } from "@/lib/stripe";
+import { paymentSchedule, PACKAGES, ADDONS, REVISION_ROUND_PRICE, type PackageKey } from "@/lib/engagement";
 
 export async function POST(req: NextRequest) {
   const supabase = createClient();
@@ -16,11 +16,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payment_number" }, { status: 400 });
   }
 
-  const admin = createAdminClient();
-  const { data: client, error } = await admin
+  const { data: client, error } = await supabase
     .from("clients")
     .select("id, name, email, project_name, package, addon_competitive_audit, addon_internal_messaging, addon_rush_delivery, addon_pitch_deck, veteran_discount, custom_price, project_total, revision_round_balance, payment_2_status, payment_3_status, stripe_customer_id")
-    .eq("supabase_user_id", user.id)
     .single();
 
   if (error || !client) {
@@ -48,12 +46,13 @@ export async function POST(req: NextRequest) {
   // Create or retrieve Stripe customer
   let customerId = client.stripe_customer_id as string | undefined;
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email: client.email,
       name: client.name,
       metadata: { client_id: client.id },
     });
     customerId = customer.id;
+    const admin = createAdminClient();
     await admin.from("clients").update({ stripe_customer_id: customerId }).eq("id", client.id);
   }
 
@@ -61,7 +60,6 @@ export async function POST(req: NextRequest) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   const pkg = PACKAGES[client.package as PackageKey];
-  const pctLabel = paymentNumber === 2 ? "25%" : "25%";
   const descParts: string[] = [
     `Payment ${paymentNumber} of 3 · ${gateLabel}`,
     "",
@@ -85,10 +83,10 @@ export async function POST(req: NextRequest) {
   if (client.custom_price) {
     descParts.push(`Custom pricing applied`);
   }
-  descParts.push(`Project Total: $${Number(client.project_total).toLocaleString()} · This payment: ${pctLabel}`);
+  descParts.push(`Project Total: $${Number(client.project_total).toLocaleString()} · This payment: 25%`);
 
   const revisionRounds = revisionBalance > 0
-    ? Math.round(revisionBalance / 350)
+    ? Math.round(revisionBalance / REVISION_ROUND_PRICE)
     : 0;
 
   const lineItems: {
@@ -114,7 +112,7 @@ export async function POST(req: NextRequest) {
     lineItems.push({
       price_data: {
         currency: "usd",
-        unit_amount: Math.round(350 * 100),
+        unit_amount: Math.round(REVISION_ROUND_PRICE * 100),
         product_data: {
           name: `Additional Revision Round — ${client.project_name}`,
         },
@@ -123,7 +121,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: customerId,
     payment_method_types: ["card"],
     line_items: lineItems,

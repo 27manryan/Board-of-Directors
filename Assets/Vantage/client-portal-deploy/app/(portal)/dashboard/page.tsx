@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { fetchGateStatusTable, deriveCurrentGate } from "@/lib/notion";
+import { getSyncedGate } from "@/lib/gate-sync";
 import { PACKAGES, paymentSchedule, type PackageKey } from "@/lib/engagement";
 
 function StatusPill({ status }: { status: string }) {
@@ -24,11 +23,9 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
     .select("id, project_name, package, current_gate, project_total, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id")
-    .eq("supabase_user_id", user.id)
     .single();
 
   if (!client) {
@@ -45,26 +42,11 @@ export default async function DashboardPage() {
   const p2Paid = client.payment_2_status === "paid";
   const p3Paid = client.payment_3_status === "paid";
 
-  // Fetch gate status from Notion and sync current_gate to Supabase
-  let gateRows: Awaited<ReturnType<typeof fetchGateStatusTable>> = [];
-  let currentGate: 1 | 2 | 3 = client.current_gate as 1 | 2 | 3 ?? 1;
-
-  if (client.notion_drafting_page_id) {
-    try {
-      gateRows = await fetchGateStatusTable(client.notion_drafting_page_id);
-      const derived = deriveCurrentGate(gateRows);
-      // Take the higher of Supabase and Notion — gate never regresses
-      const resolved = Math.max(currentGate, derived) as 1 | 2 | 3;
-      if (resolved !== (client.current_gate as number)) {
-        currentGate = resolved;
-        admin.from("clients").update({ current_gate: resolved }).eq("id", client.id).then(() => {});
-      } else {
-        currentGate = resolved;
-      }
-    } catch {
-      // Notion unavailable — fall back to Supabase value
-    }
-  }
+  const {
+    gate: currentGate,
+    rows: gateRows,
+    notionAvailable,
+  } = await getSyncedGate(client);
 
   const progressPercent = Math.round(((currentGate - 1) / 3) * 100);
 
@@ -75,6 +57,14 @@ export default async function DashboardPage() {
         <h1 className="font-serif text-4xl font-semibold text-navy">Dashboard</h1>
         <div className="mt-3 w-8 h-px bg-gold" />
       </div>
+
+      {!notionAvailable && (
+        <div className="mb-6 px-6 py-4 border-l-2 border-gold bg-[#FBF8F0]">
+          <p className="text-sm text-navy">
+            Live project details are temporarily unavailable. Your last confirmed progress is shown below.
+          </p>
+        </div>
+      )}
 
       {/* Progress card */}
       <section className="card p-4 sm:p-8 mb-6">

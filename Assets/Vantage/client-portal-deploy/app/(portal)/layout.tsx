@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { isAdminEmail } from "@/lib/admin";
 
 export default async function PortalLayout({
   children,
@@ -13,16 +13,14 @@ export default async function PortalLayout({
 
   if (!user) redirect("/login");
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
     .select("name, project_name")
-    .eq("supabase_user_id", user.id)
     .single();
 
   const clientName = client?.name ?? user.email ?? "Client";
   const projectName = client?.project_name ?? "Your Project";
-  const isAdmin = user.email?.toLowerCase() === "27manryan@gmail.com";
+  const isAdmin = isAdminEmail(user.email);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-cream-100">

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(req: Request) {
   const supabase = createClient();
@@ -14,16 +13,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const admin = createAdminClient();
-  const { data: client } = await admin
+  const { data: client } = await supabase
     .from("clients")
     .select("id")
-    .eq("supabase_user_id", user.id)
     .single();
 
   if (!client) return NextResponse.json({ error: "Client not found" }, { status: 404 });
 
-  const { error } = await admin.from("comments").insert({
+  const { error } = await supabase.from("comments").insert({
     client_id: client.id,
     deliverable_code,
     comment_text: comment_text.trim(),

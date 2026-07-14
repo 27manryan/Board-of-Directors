@@ -9,6 +9,9 @@ import { NotionLinkCell } from "./_components/NotionLinkCell";
 import { DiscoveryLinkCell } from "./_components/DiscoveryLinkCell";
 import { EditClientButton } from "./_components/EditClientButton";
 import { RevisionRoundButton } from "./_components/RevisionRoundButton";
+import { DeliverableFileCell } from "./_components/DeliverableFileCell";
+import { ClientNotificationButtons } from "./_components/ClientNotificationButtons";
+import { ClientProfilePanel } from "./_components/ClientProfilePanel";
 import {
   PACKAGES,
   DELIVERABLES,
@@ -17,8 +20,8 @@ import {
   paymentSchedule,
   type PackageKey,
 } from "@/lib/engagement";
-
-const ADMIN_EMAIL = "27manryan@gmail.com";
+import { isAdminEmail } from "@/lib/admin";
+import { isFinalPackageReady } from "@/lib/client-notifications";
 
 const PKG_STYLES: Record<PackageKey, string> = {
   foundation: "bg-cream-200 text-muted",
@@ -28,6 +31,22 @@ const PKG_STYLES: Record<PackageKey, string> = {
 };
 
 type VisibilityRow = { deliverable_code: string; released: boolean };
+type NotificationRow = {
+  id: string;
+  event_type: string;
+  status: string;
+  sent_at: string | null;
+  last_error: string | null;
+};
+type ProfileRow = {
+  id: string;
+  version: number;
+  status: string;
+  profile_markdown: string;
+  approved_at: string | null;
+  notion_synced_at: string | null;
+  generated_at: string;
+};
 type ClientRow = {
   id: string;
   name: string;
@@ -49,19 +68,23 @@ type ClientRow = {
   notion_discovery_page_id: string | null;
   deliverable_visibility: VisibilityRow[];
   discovery_submissions: { id: string; submitted_at: string; answers: Record<string, string> }[];
+  // unique(client_id) makes this a one-to-one embed → PostgREST returns an object or null, not an array.
+  deliverable_files: { file_name: string } | null;
+  client_notifications: NotificationRow[];
+  client_profiles: ProfileRow[];
 };
 
 export default async function AdminPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  if (user.email?.toLowerCase() !== ADMIN_EMAIL) redirect("/dashboard");
+  if (!isAdminEmail(user.email)) redirect("/dashboard");
 
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("clients")
     .select(
-      "id, name, email, project_name, package, addon_competitive_audit, addon_internal_messaging, addon_rush_delivery, addon_pitch_deck, veteran_discount, custom_price, project_total, revision_round_balance, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id, notion_discovery_page_id, deliverable_visibility ( deliverable_code, released ), discovery_submissions ( id, submitted_at, answers )"
+      "id, name, email, project_name, package, addon_competitive_audit, addon_internal_messaging, addon_rush_delivery, addon_pitch_deck, veteran_discount, custom_price, project_total, revision_round_balance, payment_1_status, payment_2_status, payment_3_status, notion_drafting_page_id, notion_discovery_page_id, deliverable_visibility ( deliverable_code, released ), discovery_submissions ( id, submitted_at, answers ), deliverable_files ( file_name ), client_notifications ( id, event_type, status, sent_at, last_error ), client_profiles ( id, version, status, profile_markdown, approved_at, notion_synced_at, generated_at )"
     )
     .order("created_at", { ascending: false });
 
@@ -113,7 +136,7 @@ export default async function AdminPage() {
 
           {clients.length > 0 && (
             <div className="card overflow-x-auto">
-              <table className="w-full min-w-[1400px]">
+              <table className="w-full min-w-[1600px]">
                 <thead>
                   <tr className="border-b border-[#ECE8E0] bg-cream-200">
                     <th className="px-6 py-3 text-left label">Client</th>
@@ -121,14 +144,15 @@ export default async function AdminPage() {
                     <th className="px-6 py-3 text-left label">Package</th>
                     <th className="px-6 py-3 text-left label">Total</th>
                     <th className="px-6 py-3 text-left label">Payments</th>
-                    <th className="px-6 py-3 text-left label">Notion</th>
+                    <th className="px-6 py-3 text-left label">Notion &amp; Files</th>
+                    <th className="px-6 py-3 text-left label">Profile &amp; Emails</th>
                     <th className="px-6 py-3 text-center label" colSpan={TOGGLEABLE_CODES.length}>
                       Deliverable Visibility
                     </th>
                     <th className="px-3 py-3 text-right label">·</th>
                   </tr>
                   <tr className="border-b border-[#ECE8E0] bg-cream-200/50">
-                    <th colSpan={6} />
+                    <th colSpan={7} />
                     {TOGGLEABLE_CODES.map((code) => (
                       <th key={code} className="px-2 py-2 text-center label text-[9px]" title={DELIVERABLES[code]}>
                         {code}
@@ -143,6 +167,12 @@ export default async function AdminPage() {
                     const includedCodes = new Set(deliverablesForClient(client));
                     const isProBono = client.package === "pro_bono";
                     const [p1, p2, p3] = paymentSchedule(Number(client.project_total));
+                    const latestProfile = [...(client.client_profiles ?? [])]
+                      .sort((a, b) => Number(b.version) - Number(a.version))[0] ?? null;
+                    const sentEvents = (client.client_notifications ?? [])
+                      .filter((notification) => notification.status === "sent")
+                      .map((notification) => notification.event_type);
+                    const finalPackageReady = isFinalPackageReady(client);
 
                     return (
                       <tr key={client.id} className="border-b border-[#ECE8E0] last:border-0 hover:bg-cream-50 align-top">
@@ -216,6 +246,24 @@ export default async function AdminPage() {
                               <p className="text-[9px] text-muted uppercase tracking-widest mt-1">Not submitted</p>
                             )}
                           </div>
+                          <div>
+                            <p className="text-[9px] text-muted uppercase tracking-widest mb-1">Final Package</p>
+                            <DeliverableFileCell
+                              clientId={client.id}
+                              initialFileName={client.deliverable_files?.file_name ?? null}
+                            />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 space-y-4">
+                          <ClientProfilePanel
+                            clientId={client.id}
+                            profile={latestProfile}
+                          />
+                          <ClientNotificationButtons
+                            clientId={client.id}
+                            finalPackageReady={finalPackageReady}
+                            sentEvents={sentEvents}
+                          />
                         </td>
                         {TOGGLEABLE_CODES.map((code) => (
                           <td key={code} className="px-2 py-4 text-center">

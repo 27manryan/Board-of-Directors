@@ -1,23 +1,34 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidateNotionCache } from "@/lib/notion-cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { findDraftingPageId, findDiscoveryPageId } from "@/lib/notion";
 import {
+  appendClientProfileSummaryToNotion,
+  findDraftingPageId,
+  findDiscoveryPageId,
+} from "@/lib/notion";
+import {
+  DELIVERABLES,
   PACKAGES,
   REVISION_ROUND_PRICE,
   type PackageKey,
   deliverablesForClient,
   projectTotal,
 } from "@/lib/engagement";
-
-const ADMIN_EMAIL = "27manryan@gmail.com";
+import { isAdminEmail } from "@/lib/admin";
+import {
+  approveAndSendClientNotification,
+  isFinalPackageReady,
+  portalUrl,
+} from "@/lib/client-notifications";
+import { createProfileDraftForClient } from "@/lib/portal-side-effects";
 
 async function requireAdmin() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL) {
+  if (!user || !isAdminEmail(user.email)) {
     throw new Error("Unauthorized");
   }
 }
@@ -27,6 +38,30 @@ function randomTempPassword() {
     .map((b) => b.toString(36))
     .join("")
     .slice(0, 16);
+}
+
+async function createPasswordSetupLink(email: string) {
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "recovery",
+    email,
+    options: {
+      redirectTo: `${portalUrl()}/reset-password`,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const actionLink = (data as { properties?: { action_link?: string } } | null)
+    ?.properties?.action_link;
+
+  if (!actionLink) {
+    throw new Error("Supabase did not return a setup link.");
+  }
+
+  return actionLink;
 }
 
 // Reseeds deliverable_visibility for a client based on their current engagement.
@@ -71,7 +106,7 @@ async function reseedVisibility(
 // =========================================================================
 
 export type CreateClientResult =
-  | { ok: true; tempPassword: string; email: string }
+  | { ok: true; setupLink: string; email: string }
   | { ok: false; error: string };
 
 export async function createClientAction(formData: FormData): Promise<CreateClientResult> {
@@ -146,8 +181,38 @@ export async function createClientAction(formData: FormData): Promise<CreateClie
     return { ok: false, error: `Client created, but seeding visibility failed: ${visError.message}` };
   }
 
+  let setupLink: string;
+  try {
+    setupLink = await createPasswordSetupLink(email);
+  } catch (setupError) {
+    return {
+      ok: false,
+      error: `Client created, but setup link creation failed: ${(setupError as Error).message}`,
+    };
+  }
+
+  try {
+    await createProfileDraftForClient({ clientId: clientRow.id });
+    await admin.from("client_notifications").insert({
+      client_id: clientRow.id,
+      event_type: "portal_welcome",
+      dedupe_key: `portal_welcome:${clientRow.id}:current`,
+      recipient_email: email,
+      status: "pending",
+      template_version: "2026-06-27",
+      payload: {
+        clientName: name,
+        projectName: project,
+        portalUrl: portalUrl(),
+        setupUrl: setupLink,
+      },
+    });
+  } catch (followUpError) {
+    console.error("Client profile or welcome ledger creation failed:", followUpError);
+  }
+
   revalidatePath("/admin");
-  return { ok: true, tempPassword, email };
+  return { ok: true, setupLink, email };
 }
 
 // =========================================================================
@@ -229,7 +294,9 @@ export async function toggleVisibilityAction(
     .eq("client_id", clientId)
     .eq("deliverable_code", deliverableCode);
   if (error) throw new Error(error.message);
+  invalidateNotionCache("drafting");
   revalidatePath("/admin");
+  revalidatePath("/deliverables");
 }
 
 export async function togglePaymentAction(
@@ -287,6 +354,238 @@ export async function clearRevisionBalanceAction(
     .update({ revision_round_balance: 0 })
     .eq("id", clientId);
   if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+// =========================================================================
+// CLIENT NOTIFICATIONS
+// =========================================================================
+
+type AdminSendResult =
+  | { ok: true; message?: string }
+  | { ok: false; error: string };
+
+async function loadClientForNotification(clientId: string) {
+  const admin = createAdminClient();
+  const { data: client, error } = await admin
+    .from("clients")
+    .select(
+      "id, name, email, project_name, package, payment_3_status, deliverable_visibility ( deliverable_code, released ), deliverable_files ( file_name )"
+    )
+    .eq("id", clientId)
+    .single();
+
+  if (error || !client) {
+    throw new Error(error?.message ?? "Client not found");
+  }
+
+  const row = client as unknown as {
+    id: string;
+    name: string;
+    email: string;
+    project_name: string;
+    package: string;
+    payment_3_status: string;
+    deliverable_visibility: { deliverable_code: string; released: boolean }[];
+    deliverable_files: { file_name: string } | { file_name: string }[] | null;
+  };
+
+  return {
+    ...row,
+    deliverable_files: Array.isArray(row.deliverable_files)
+      ? row.deliverable_files[0] ?? null
+      : row.deliverable_files,
+  };
+}
+
+export async function sendWelcomeNotificationAction(
+  clientId: string
+): Promise<AdminSendResult> {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const client = await loadClientForNotification(clientId);
+  const setupLink = await createPasswordSetupLink(client.email);
+
+  const result = await approveAndSendClientNotification({
+    admin,
+    clientId,
+    eventType: "portal_welcome",
+    recipientEmail: client.email,
+    payload: {
+      clientName: client.name,
+      projectName: client.project_name,
+      portalUrl: portalUrl(),
+      setupUrl: setupLink,
+    },
+  });
+
+  revalidatePath("/admin");
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
+}
+
+export async function sendDeliverablesReadyNotificationAction(
+  clientId: string
+): Promise<AdminSendResult> {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const client = await loadClientForNotification(clientId);
+  const released = client.deliverable_visibility
+    .filter((row) => row.released)
+    .map((row) => `- ${DELIVERABLES[row.deliverable_code] ?? row.deliverable_code}`)
+    .join("\n");
+
+  if (!released) {
+    return { ok: false, error: "No released deliverables are available yet." };
+  }
+
+  const result = await approveAndSendClientNotification({
+    admin,
+    clientId,
+    eventType: "deliverables_ready",
+    entityId: released,
+    recipientEmail: client.email,
+    payload: {
+      clientName: client.name,
+      projectName: client.project_name,
+      portalUrl: `${portalUrl()}/deliverables`,
+      deliverablesList: released,
+    },
+  });
+
+  revalidatePath("/admin");
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
+}
+
+export async function sendFinalPackageNotificationAction(
+  clientId: string
+): Promise<AdminSendResult> {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const client = await loadClientForNotification(clientId);
+
+  if (!isFinalPackageReady(client)) {
+    return {
+      ok: false,
+      error: "Final package is not unlocked yet. Upload the file and confirm Payment 3 first.",
+    };
+  }
+
+  const result = await approveAndSendClientNotification({
+    admin,
+    clientId,
+    eventType: "final_package_available",
+    entityId: client.deliverable_files?.file_name ?? "final-package",
+    recipientEmail: client.email,
+    payload: {
+      clientName: client.name,
+      projectName: client.project_name,
+      portalUrl: `${portalUrl()}/deliverables`,
+      finalPackageUrl: `${portalUrl()}/deliverables`,
+    },
+  });
+
+  revalidatePath("/admin");
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
+}
+
+// =========================================================================
+// CLIENT PROFILES
+// =========================================================================
+
+export async function regenerateClientProfileAction(
+  clientId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const { data: discovery } = await admin
+    .from("discovery_submissions")
+    .select("answers")
+    .eq("client_id", clientId)
+    .order("submitted_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  try {
+    await createProfileDraftForClient({
+      clientId,
+      discoveryAnswers: (discovery?.answers ?? {}) as Record<string, string>,
+    });
+  } catch (error) {
+    return { ok: false, error: (error as Error).message };
+  }
+
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export async function approveClientProfileAction(
+  profileId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || !isAdminEmail(user.email)) {
+    return { ok: false, error: "Unauthorized" };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("client_profiles")
+    .update({
+      status: "approved",
+      approved_at: new Date().toISOString(),
+      approved_by: user.id,
+    })
+    .eq("id", profileId);
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export async function publishClientProfileToNotionAction(
+  profileId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const { data: profile, error } = await admin
+    .from("client_profiles")
+    .select("id, status, profile_markdown, clients ( notion_drafting_page_id )")
+    .eq("id", profileId)
+    .single();
+
+  if (error || !profile) {
+    return { ok: false, error: error?.message ?? "Profile not found" };
+  }
+
+  if (profile.status !== "approved") {
+    return { ok: false, error: "Approve the profile before publishing it to Notion." };
+  }
+
+  const pageId = (profile.clients as { notion_drafting_page_id?: string | null } | null)
+    ?.notion_drafting_page_id;
+  if (!pageId) {
+    return { ok: false, error: "Link the client's Drafting page before publishing." };
+  }
+
+  try {
+    await appendClientProfileSummaryToNotion(pageId, profile.profile_markdown);
+  } catch (notionError) {
+    return { ok: false, error: (notionError as Error).message };
+  }
+
+  const { error: updateError } = await admin
+    .from("client_profiles")
+    .update({ notion_synced_at: new Date().toISOString() })
+    .eq("id", profileId);
+
+  if (updateError) {
+    return { ok: false, error: updateError.message };
+  }
+
   revalidatePath("/admin");
   return { ok: true };
 }
