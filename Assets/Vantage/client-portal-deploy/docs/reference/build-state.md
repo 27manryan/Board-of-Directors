@@ -19,6 +19,8 @@ A durable June 29 record says the client-profile migration and client-facing ema
 
 The deployable source was recovered on July 14, 2026, into its original `27manryan/Board-of-Directors` history at `Assets/Vantage/client-portal-deploy`. The verified local working clone is `/Users/ryanmancuso/Developer/Board-of-Directors`.
 
+Vercel now builds from `main` in that repository with Root Directory set to `Assets/Vantage/client-portal-deploy`. Preview deployment `dpl_38tdUeqqeLHXm9XcG9xmKbejXxkA` passed, and production deployment `dpl_8fAy84cKkvoLDjLEMEPdnmDJFuNC` reached Ready with the `portal.vantagestrat.co` alias on July 14, 2026.
+
 | Step | Scope | Status |
 |---|---|---|
 | 1 | Next.js scaffold, design system, page shells | Complete |
@@ -37,6 +39,7 @@ Portal is live on Vercel and in active client use.
 - The official tracked source is `27manryan/Board-of-Directors/Assets/Vantage/client-portal-deploy`.
 - Lint, 29 tests, type checking, and a production build pass from the recovered local clone.
 - A current unauthenticated production request reaches Vercel and redirects to `/login`.
+- The GitHub source, Vercel project root, production branch, and public alias are reconciled.
 - Migrations 0001 through 0007 and the Stripe customer restoration migration are active.
 - `.env.local` exists locally with required keys.
 - Final-package upload and P3-gated download are active.
@@ -87,7 +90,7 @@ Portal is live on Vercel and in active client use.
 
 ## Historical Step 7 checklist
 
-Step 7 is complete according to the June 24 production record. Its original unchecked list is retired. The remaining current checks are source reconciliation with Vercel, the logged-in profile and email smoke test, and the Next.js security upgrade.
+Step 7 is complete according to the June 24 production record. Its original unchecked list is retired. The remaining current checks are the logged-in profile and email smoke test and the Next.js security upgrade.
 
 ## Production environment variables
 

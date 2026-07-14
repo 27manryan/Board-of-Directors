@@ -19,10 +19,11 @@ The official tracked source is this folder in `27manryan/Board-of-Directors`. Th
 
 The repository was reconciled on 2026-07-14 from the newer local production working copy that had been left inside Athenaeum. Lint, 29 tests, type checking, and a production build pass from the recovered source.
 
+Vercel now builds from `main` in this repository with Root Directory set to `Assets/Vantage/client-portal-deploy`. The recovered source passed a preview deployment and deployed successfully to production at `portal.vantagestrat.co` on 2026-07-14.
+
 Current verification gaps:
 
 - A June 29 record says the client-profile migration and email features deployed, but the planned logged-in smoke test was not recorded.
-- The revived GitHub source and local Vercel project link still need a deliberate production-source reconciliation before the next deployment.
 - Next.js 14 has current high-severity advisories. Upgrade planning is required rather than an unreviewed forced major update.
 
 ## Source boundary
